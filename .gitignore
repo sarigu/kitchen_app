@@ -1,0 +1,7 @@
+.DS_Store
+*.pyc
+*.vscode
+*.swp
+*.idea
+__pycache__/
+db.sqlite3
