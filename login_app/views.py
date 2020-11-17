@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse
 from django.contrib.auth.models import User #user object comes with attributes like username, password, email, name
 from django.contrib.auth import authenticate, login as dj_login, logout 
 from django.http import HttpResponseRedirect
+from django.db import IntegrityError
 from . import models
 
 # Create your views here.
@@ -25,10 +26,11 @@ def sign_up(request):
       confirm_password = request.POST['confirm_password']
       email = request.POST['email']
       if password == confirm_password:
-         if User.objects.create_user(username, email, password):
+         try:
+            User.objects.create_user(username, email, password)
             return HttpResponseRedirect(reverse('login_app:login'))
-         else:
-            context = {'error': 'Could not create user - try somethig else.'}
+         except IntegrityError as e:
+            context = {'error': 'Username exists try a different name.'}
       else:
          context = {'error': 'Passwords do not match.'}
    return render(request, 'login_app/sign_up.html', context)
