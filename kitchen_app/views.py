@@ -39,3 +39,13 @@ def create_room(request):
         'user': request.user,    
     }
     return render(request, 'kitchen_app/index.html', context)
+
+@login_required
+def enter_room(request, room_id):
+    print(room_id)
+    room = get_object_or_404(Room, pk=room_id)
+    context={
+        'room': room,
+        'user': request.user,    
+    }
+    return render(request, 'kitchen_app/dashboard.html', context)
