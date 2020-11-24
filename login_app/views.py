@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse
 from django.contrib.auth.models import User #user object comes with attributes like username, password, email, name
-from django.contrib.auth import authenticate, login as dj_login, logout 
+from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from . import models
@@ -17,6 +17,10 @@ def login(request):
       else:
          context = {'error': 'wrong email or password.'}
    return render(request, 'login_app/login.html')
+
+def logout(request):
+   dj_logout(request)
+   return HttpResponseRedirect(reverse('login_app:login'))
 
 def sign_up(request):
    context = {}
