@@ -12,7 +12,10 @@
 
 <body>
     <a href="{% url 'login_app:logout' %}">Log Out</a>
-    <h1>Hello you!</h1>
+    <h1>Hello you! {{ user.username }}</h1>
+    {% for room in rooms %}
+    <div>{{room}} </div>
+    {% endfor %}
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
         Create a room
     </button>
