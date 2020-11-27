@@ -49,3 +49,8 @@ def enter_room(request, room_id):
         'user': request.user,    
     }
     return render(request, 'kitchen_app/dashboard.html', context)
+
+@login_required
+def members(request, room_id):
+    context = {}
+    return render(request, 'kitchen_app/members.html', context)

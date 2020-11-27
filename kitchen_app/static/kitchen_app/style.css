@@ -4,3 +4,7 @@ body{
 #sidebarMenu, .sidebar-sticky, .sidebar{
     height: 100vh;
 }
+.card-deck{
+    width:350px;
+    padding:20px;
+}

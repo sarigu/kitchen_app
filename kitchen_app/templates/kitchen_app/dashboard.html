@@ -17,7 +17,7 @@
         <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Kitchen App</a>
         <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
-                <a class="nav-link" href="#">Sign out</a>
+                <a class="nav-link" href="{% url 'login_app:logout' %}">Log out</a>
             </li>
         </ul>
     </nav>
@@ -37,7 +37,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{% url 'kitchen_app:members' room.pk %}">
                                 Members
                             </a>
                         </li>
