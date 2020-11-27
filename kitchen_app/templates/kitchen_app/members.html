@@ -21,14 +21,109 @@
             </li>
         </ul>
     </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'kitchen_app:members' room %}">
+                                Members
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Kitchen Fund
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Rules
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Events
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
-    <h1>Members</h1>
-    {% for member in members %}
-    <div>{{ member.userID }} - {{ member.status }} </div>
-    {% if member.status == "member"  %}
-    <button>Make admin</button>
-    {% endif %}
-    {% endfor %}
+            <main class="col-md-9">
+                <h1>Members</h1>
+                <ul class="list-group">
+                    {% for member in members %}
+                    <li class="list-group-item">
+                        <div class="d-inline-block">
+                            <h3>{{ member.userID }}</h3>
+                            <span class="badge badge-light">{{ member.status }}</span>
+                        </div>
+                        <br>
+                        {% if member.status == "member"  %}
+                        <button class="btn btn-lg btn-primary">Make admin</button>
+                        {% endif %}
+                        {% endfor %}
+                    </li>
+
+                </ul>
+                <hr>
+                <h3>Find new members</h3>
+
+                <form action="{% url 'kitchen_app:members' room %}" method="POST">
+                    {% csrf_token %}
+                    <fieldset>
+                        <div>
+                            {% if search_term %}
+                            <input type="text" id="name" name="name" value="{{ search_term }}">
+                            {% else %}
+                            <input type="text" id="name" name="name" placeholder="Name to look up">
+                            {% endif %}
+                        </div>
+                        <input class="btn btn-primary" type="submit" id="submit" value="Look Up">
+                    </fieldset>
+                </form>
+
+
+                {% if users %}
+                <ul class="list-group">
+                    {% for user in users %}
+                    <li class="list-group-item">
+                        <h2>{{ user }}</h2>
+                        <p>{{ user.email }}</p>
+                        <button class="btn btn-lg btn-primary">add</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+
+
+
+
+            </main>
+        </div>
+    </div>
+
+
+    <script>
+
+        window.onload = function () {
+            document.getElementByID("name").focus();
+        }
+
+
+    </script>
 
 </body>
 

@@ -16,10 +16,10 @@
     <form action="{% url 'login_app:sign_up' %}" method="POST" class="form-signin">
         {% csrf_token %}
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <input class="form-control" type="text" name="username" placeholder="username">
-        <input class="form-control" type="email" name="email" placeholder="Email Address">
-        <input class="form-control" type="password" name="password" placeholder="password">
-        <input class="form-control" type="password" name="confirm_password" placeholder="confirm Password">
+        <input required class="form-control" type="text" name="username" placeholder="username">
+        <input required class="form-control" type="email" name="email" placeholder="Email Address">
+        <input required class="form-control" type="password" name="password" placeholder="password">
+        <input required class="form-control" type="password" name="confirm_password" placeholder="confirm Password">
         <input type="submit" value="Sign Up" class="btn btn-lg btn-primary btn-block">
     </form>
     <hr>

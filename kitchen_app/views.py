@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import Room, RoomForm, RoomMembers
+from .models import User, Room, RoomForm, RoomMembers
 
 
 # Create your views here.
@@ -41,7 +41,6 @@ def create_room(request):
 
 @login_required
 def enter_room(request, room_id):
-    print(room_id)
     room = get_object_or_404(Room, pk=room_id)
     context={
         'room': room,
@@ -52,10 +51,20 @@ def enter_room(request, room_id):
 @login_required
 def members(request, room_id):
     members = RoomMembers.objects.filter(roomID=room_id)
-    print(members)
     context = {
         'user': request.user,   
         'members': members,
-        'roomID': room_id
+        'room': room_id
     }
+
+    if request.method == 'POST':
+        print("hello")
+        name = request.POST['name']
+        print(name)
+        users = User.objects.filter(username__icontains=name)
+        print(users)
+        context['search_term'] = name
+        context['users'] = users
+
     return render(request, 'kitchen_app/members.html', context)
+

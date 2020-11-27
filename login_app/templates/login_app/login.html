@@ -16,9 +16,9 @@
     <hr>
     <form action="{% url 'login_app:login' %}" method="POST" class="form-signin">
         {% csrf_token %}
-        <input class="form-control" type="text" name="username" placeholder="username">
+        <input required class="form-control" type="text" name="username" placeholder="username">
         <br />
-        <input class="form-control" type="password" name="password" placeholder="Password">
+        <input required class="form-control" type="password" name="password" placeholder="Password">
         <br />
         <input type="submit" value="Login" class="btn btn-lg btn-primary btn-block">
     </form>

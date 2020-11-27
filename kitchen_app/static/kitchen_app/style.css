@@ -1,8 +1,8 @@
 body{
     width:100%;
 }
-#sidebarMenu, .sidebar-sticky, .sidebar{
-    height: 100vh;
+.sidebar{
+    height: 100%;
 }
 .card-deck{
     width:350px;
