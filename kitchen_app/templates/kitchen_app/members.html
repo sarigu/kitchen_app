@@ -21,9 +21,13 @@
             </li>
         </ul>
     </nav>
+
     <h1>Members</h1>
     {% for member in members %}
-    <div>{{ member }} </div>
+    <div>{{ member.userID }} - {{ member.status }} </div>
+    {% if member.status == "member"  %}
+    <button>Make admin</button>
+    {% endif %}
     {% endfor %}
 
 </body>

@@ -3,6 +3,10 @@ from django.db import models
 from django.forms import ModelForm
 from django.db.models.query import QuerySet
 
+type_of_room_member = (
+    ('admin', 'Admin'),
+    ('member', 'Member'),
+)
 
 class Room (models.Model):
     name = models.CharField(max_length=100)
@@ -19,7 +23,7 @@ class RoomForm(ModelForm):
 class RoomMembers (models.Model):
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
     roomID = models.ForeignKey(Room, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, null=True, blank=True)
+    status = models.CharField(max_length=10, choices=type_of_room_member, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @classmethod

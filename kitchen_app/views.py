@@ -12,7 +12,6 @@ def index(request):
     for roomID in queryset:
         room = get_object_or_404(Room, pk=roomID)
         rooms.append(room)
-
     context={
         'rooms': rooms,
         'user': request.user,    
@@ -52,5 +51,11 @@ def enter_room(request, room_id):
 
 @login_required
 def members(request, room_id):
-    context = {}
+    members = RoomMembers.objects.filter(roomID=room_id)
+    print(members)
+    context = {
+        'user': request.user,   
+        'members': members,
+        'roomID': room_id
+    }
     return render(request, 'kitchen_app/members.html', context)
