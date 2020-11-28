@@ -50,6 +50,7 @@ def enter_room(request, room_id):
 @login_required
 def members(request, room_id):
     members = RoomMembers.objects.filter(roomID=room_id)
+    print(members)
     room = get_object_or_404(Room, pk=room_id)
     context = {
         'user': request.user,   
@@ -57,6 +58,11 @@ def members(request, room_id):
         'room': room
     }
 
+    if request.method == 'POST' and 'updateBtn' in request.POST:
+        memberID = request.POST['memberID']
+        member = get_object_or_404(RoomMembers, userID=memberID)
+        member.status = "admin"
+        member.save()
     if request.method == 'POST' and 'searchBtn' in request.POST:
         name = request.POST['name']
         members = RoomMembers.objects.filter(roomID=room_id).values_list('userID', flat=True)

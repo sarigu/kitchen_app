@@ -8,6 +8,7 @@ type_of_room_member = (
     ('member', 'Member'),
 )
 
+
 class Room (models.Model):
     name = models.CharField(max_length=100)
 
@@ -36,4 +37,4 @@ class RoomMembers (models.Model):
         roomMember.save()
 
     def __str__(self):
-        return f"{self.userID} - {self.roomID} - {self.status} - {self.created_at}"
+        return f"{self.userID} - {self.userID.pk} - {self.roomID} - {self.status} - {self.created_at}"

@@ -6,19 +6,19 @@
 <h1>Members</h1>
 <ul class="list-group">
     {% for member in members %}
-    <li class="list-group-item">
-        <div class="d-inline-block">
-            <h3>{{ member.userID }}</h3>
-            <span class="badge badge-light">{{ member.status }}</span>
-        </div>
+    <form class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="memberID" value="{{ member.userID.pk }}">
+        <h3>{{ member.userID }}</h3>
+        <span class="badge badge-light">{{ member.status }}</span>
         <br>
         {% if member.status == "member"  %}
-        <button class="btn btn-lg btn-primary">Make admin</button>
+        <input type="submit" name="updateBtn" class="btn btn-lg btn-primary" value="make admin">
         {% endif %}
-        {% endfor %}
-    </li>
-
+    </form>
+    {% endfor %}
 </ul>
+
 <hr>
 <h3>Find new members</h3>
 
@@ -32,7 +32,7 @@
             <input type="text" id="name" name="name" placeholder="Name to look up">
             {% endif %}
         </div>
-        <input class="btn btn-primary" name="searchBtn" type="submit" id="submit" value="Look Up">
+        <input class="btn btn-primary" name="searchBtn" type="submit" value="Look Up">
     </fieldset>
 </form>
 
@@ -42,7 +42,7 @@
     {% for user in users %}
     <form class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="userID" value="{{ user.pk }}">
+        <input type="text" name="userID" value="{{ user.pk}}">
         <h2>{{ user }}</h2>
         <p>{{ user.email }}</p>
         <button name="addBtn" class="btn btn-lg btn-primary">add</button>
