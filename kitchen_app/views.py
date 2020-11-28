@@ -49,7 +49,6 @@ def enter_room(request, room_id):
 
 @login_required
 def members(request, room_id):
-    print(room_id)
     members = RoomMembers.objects.filter(roomID=room_id)
     room = get_object_or_404(Room, pk=room_id)
     context = {
@@ -58,13 +57,18 @@ def members(request, room_id):
         'room': room
     }
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'searchBtn' in request.POST:
         name = request.POST['name']
         members = RoomMembers.objects.filter(roomID=room_id).values_list('userID', flat=True)
         users = User.objects.filter(username__icontains=name).exclude(id__in = members)
 
         context['search_term'] = name
         context['users'] = users
+
+    if request.method == 'POST' and 'addBtn' in request.POST:
+        userID = request.POST['userID']
+        user = get_object_or_404(User, pk=userID)
+        RoomMembers.create(user, room, "member")
 
     return render(request, 'kitchen_app/members.html', context)
 
