@@ -3,7 +3,6 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from .models import User, Room, RoomForm, RoomMembers
 
-
 # Create your views here.
 @login_required
 def index(request):
@@ -61,7 +60,9 @@ def members(request, room_id):
 
     if request.method == 'POST':
         name = request.POST['name']
-        users = User.objects.filter(username__icontains=name)
+        members = RoomMembers.objects.filter(roomID=room_id).values_list('userID', flat=True)
+        users = User.objects.filter(username__icontains=name).exclude(id__in = members)
+
         context['search_term'] = name
         context['users'] = users
 
