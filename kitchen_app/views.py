@@ -68,3 +68,9 @@ def members(request, room_id):
 
     return render(request, 'kitchen_app/members.html', context)
 
+@login_required
+def profile(request):
+    context = { 
+        'user': request.user
+    }
+    return render(request, 'kitchen_app/profile.html', context)

@@ -9,7 +9,7 @@
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'kitchen_app/style.css' %}" media="screen">
-    <title>{% block title %}{% endblock %}</title>
+    <title> Profile</title>
 </head>
 
 <body>
@@ -32,12 +32,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'kitchen_app:profile' %}">
+                            <a class="nav-link" href="#">
                                 Profile
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'kitchen_app:members' room.pk %}">
+                            <a class="nav-link" href="#">
                                 Members
                             </a>
                         </li>
@@ -61,13 +61,21 @@
             </nav>
 
             <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-                {% block content %}
-                {% endblock %}
+                <h1>Your profile</h1>
+                <ul class="list-group">
+                    <li class="list-group-item"> Username: {{ user.username}}
+                    </li>
+                    <li class="list-group-item"> Email: {{ user.email}}
+                    </li>
+                    <li class="list-group-item"> First Name: {{ user.first_name}}
+                    </li>
+                    <li class="list-group-item"> Last Name: {{ user.last_name}}
+                    </li>
+                </ul>
+                <button>Edit profile</button>
             </main>
         </div>
     </div>
-    {% block footer %}
-    {% endblock %}
 
 
 </body>
