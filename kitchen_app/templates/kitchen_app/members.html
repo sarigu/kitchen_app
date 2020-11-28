@@ -1,130 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'kitchen_app/base_dashboard.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'kitchen_app/style.css' %}" media="screen">
-    <title>Members</title>
-</head>
+{% block title %}Index{% endblock %}
 
-<body>
-    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Kitchen App</a>
-        <ul class="navbar-nav px-3">
-            <li class="nav-item text-nowrap">
-                <a class="nav-link" href="{% url 'login_app:logout' %}">Log out</a>
-            </li>
-        </ul>
-    </nav>
-    <div class="container-fluid">
-        <div class="row">
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-                <div class="sidebar-sticky pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">
-                                Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                Profile
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'kitchen_app:members' room %}">
-                                Members
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                Kitchen Fund
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                Rules
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                Events
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <main class="col-md-9">
-                <h1>Members</h1>
-                <ul class="list-group">
-                    {% for member in members %}
-                    <li class="list-group-item">
-                        <div class="d-inline-block">
-                            <h3>{{ member.userID }}</h3>
-                            <span class="badge badge-light">{{ member.status }}</span>
-                        </div>
-                        <br>
-                        {% if member.status == "member"  %}
-                        <button class="btn btn-lg btn-primary">Make admin</button>
-                        {% endif %}
-                        {% endfor %}
-                    </li>
-
-                </ul>
-                <hr>
-                <h3>Find new members</h3>
-
-                <form action="{% url 'kitchen_app:members' room %}" method="POST">
-                    {% csrf_token %}
-                    <fieldset>
-                        <div>
-                            {% if search_term %}
-                            <input type="text" id="name" name="name" value="{{ search_term }}">
-                            {% else %}
-                            <input type="text" id="name" name="name" placeholder="Name to look up">
-                            {% endif %}
-                        </div>
-                        <input class="btn btn-primary" type="submit" id="submit" value="Look Up">
-                    </fieldset>
-                </form>
-
-
-                {% if users %}
-                <ul class="list-group">
-                    {% for user in users %}
-                    <li class="list-group-item">
-                        <h2>{{ user }}</h2>
-                        <p>{{ user.email }}</p>
-                        <button class="btn btn-lg btn-primary">add</button>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-
-
-
-
-            </main>
+{% block content %}
+<h1>Members</h1>
+<ul class="list-group">
+    {% for member in members %}
+    <li class="list-group-item">
+        <div class="d-inline-block">
+            <h3>{{ member.userID }}</h3>
+            <span class="badge badge-light">{{ member.status }}</span>
         </div>
-    </div>
+        <br>
+        {% if member.status == "member"  %}
+        <button class="btn btn-lg btn-primary">Make admin</button>
+        {% endif %}
+        {% endfor %}
+    </li>
+
+</ul>
+<hr>
+<h3>Find new members</h3>
+
+<form action="{% url 'kitchen_app:members' room.pk %}" method="POST">
+    {% csrf_token %}
+    <fieldset>
+        <div>
+            {% if search_term %}
+            <input type="text" id="name" name="name" value="{{ search_term }}">
+            {% else %}
+            <input type="text" id="name" name="name" placeholder="Name to look up">
+            {% endif %}
+        </div>
+        <input class="btn btn-primary" type="submit" id="submit" value="Look Up">
+    </fieldset>
+</form>
 
 
-    <script>
+{% if users %}
+<ul class="list-group">
+    {% for user in users %}
+    <li class="list-group-item">
+        <h2>{{ user }}</h2>
+        <p>{{ user.email }}</p>
+        <button class="btn btn-lg btn-primary">add</button>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
 
-        window.onload = function () {
-            document.getElementByID("name").focus();
-        }
 
 
-    </script>
 
-</body>
+{% endblock %}
+{% block footer %}
 
-</html>
+<script>
+
+    window.onload = function () {
+        document.getElementByID("name").focus();
+    }
+
+
+</script>
+{% endblock %}

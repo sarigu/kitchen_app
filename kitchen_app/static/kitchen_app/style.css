@@ -1,8 +1,12 @@
 body{
     width:100%;
 }
+.navbar{
+    background-color: #EF562D !important;
+}
+
 .sidebar{
-    height: 100%;
+    height: 100vh;
 }
 .card-deck{
     width:350px;

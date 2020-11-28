@@ -50,19 +50,18 @@ def enter_room(request, room_id):
 
 @login_required
 def members(request, room_id):
+    print(room_id)
     members = RoomMembers.objects.filter(roomID=room_id)
+    room = get_object_or_404(Room, pk=room_id)
     context = {
         'user': request.user,   
         'members': members,
-        'room': room_id
+        'room': room
     }
 
     if request.method == 'POST':
-        print("hello")
         name = request.POST['name']
-        print(name)
         users = User.objects.filter(username__icontains=name)
-        print(users)
         context['search_term'] = name
         context['users'] = users
 
