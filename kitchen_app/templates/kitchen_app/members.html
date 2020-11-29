@@ -8,8 +8,8 @@
     {% for member in members %}
     <form class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
         {% csrf_token %}
-        <input type="text" name="memberID" value="{{ member.userID.pk }}">
-        <h3>{{ member.userID }}</h3>
+        <input type="hidden" name="memberID" value="{{ member.user.pk }}">
+        <h3>{{ member.user }}</h3>
         <span class="badge badge-light">{{ member.status }}</span>
         <br>
         {% if member.status == "member"  %}
@@ -42,7 +42,7 @@
     {% for user in users %}
     <form class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
         {% csrf_token %}
-        <input type="text" name="userID" value="{{ user.pk}}">
+        <input type="hidden" name="userID" value="{{ user.pk }}">
         <h2>{{ user }}</h2>
         <p>{{ user.email }}</p>
         <button name="addBtn" class="btn btn-lg btn-primary">add</button>

@@ -7,9 +7,9 @@ from .models import User, Room, RoomForm, RoomMembers
 @login_required
 def index(request):
     rooms = []
-    queryset = RoomMembers.objects.filter(userID=request.user).values_list('roomID', flat=True)
-    for roomID in queryset:
-        room = get_object_or_404(Room, pk=roomID)
+    queryset = RoomMembers.objects.filter(user=request.user).values_list('room', flat=True)
+    for room in queryset:
+        room = get_object_or_404(Room, pk=room)
         rooms.append(room)
     context={
         'rooms': rooms,
@@ -27,9 +27,9 @@ def create_room(request):
                 RoomMembers.create(request.user, newRoom, "admin")
              
     rooms = []
-    queryset = RoomMembers.objects.filter(userID=request.user).values_list('roomID', flat=True)
-    for roomID in queryset:
-        room = get_object_or_404(Room, pk=roomID)
+    queryset = RoomMembers.objects.filter(user=request.user).values_list('room', flat=True)
+    for room in queryset:
+        room = get_object_or_404(Room, pk=room)
         rooms.append(room)
         
     context={
@@ -49,8 +49,7 @@ def enter_room(request, room_id):
 
 @login_required
 def members(request, room_id):
-    members = RoomMembers.objects.filter(roomID=room_id)
-    print(members)
+    members = RoomMembers.objects.filter(room=room_id)
     room = get_object_or_404(Room, pk=room_id)
     context = {
         'user': request.user,   
@@ -60,12 +59,12 @@ def members(request, room_id):
 
     if request.method == 'POST' and 'updateBtn' in request.POST:
         memberID = request.POST['memberID']
-        member = get_object_or_404(RoomMembers, userID=memberID)
+        member = get_object_or_404(RoomMembers, user=memberID)
         member.status = "admin"
         member.save()
     if request.method == 'POST' and 'searchBtn' in request.POST:
         name = request.POST['name']
-        members = RoomMembers.objects.filter(roomID=room_id).values_list('userID', flat=True)
+        members = RoomMembers.objects.filter(room=room_id).values_list('user', flat=True)
         users = User.objects.filter(username__icontains=name).exclude(id__in = members)
 
         context['search_term'] = name

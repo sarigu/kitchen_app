@@ -22,19 +22,19 @@ class RoomForm(ModelForm):
         fields = ['name']
 
 class RoomMembers (models.Model):
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
-    roomID = models.ForeignKey(Room, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=type_of_room_member, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @classmethod
-    def create(cls, userID, roomID, status):
+    def create(cls, user, room, status):
         roomMember = cls()
-        roomMember.userID  = userID
-        roomMember.roomID = roomID
+        roomMember.user  = user
+        roomMember.room = room
         roomMember.status = status
         roomMember.created_at = models.DateTimeField(auto_now_add=True)
         roomMember.save()
 
     def __str__(self):
-        return f"{self.userID} - {self.userID.pk} - {self.roomID} - {self.status} - {self.created_at}"
+        return f"{self.user} - {self.room} - {self.status} - {self.created_at}"
