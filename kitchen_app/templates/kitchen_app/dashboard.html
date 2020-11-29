@@ -5,5 +5,29 @@
 {% block content %}
 <div>
     <h1>Hi you entered the dashboard {{ room.name }}</h1>
+    <hr>
+    <div>
+        <h2>Your tasks</h2>
+        {% if assignedTasks %}
+        {% for task in assignedTasks %}
+        <div>{{ task.task }} {{ task.status }}</div>
+        <input type="checkbox" name="status" {% if task.status  %}checked{% endif %}>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <hr>
+    <div>
+        <h2>Tasks to take</h2>
+        {% if unassignedTasks %}
+        {% for task in unassignedTasks %}
+        <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="taskID" value="{{ task.pk }}">
+            <div>{{ task.task }}</div>
+            <button name="takeBtn" class="btn btn-lg btn-primary">Take task</button>
+        </form>
+        {% endfor %}
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

@@ -38,3 +38,29 @@ class RoomMembers (models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.room} - {self.status} - {self.created_at}"
+
+class Tasks (models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    task = models.CharField(max_length=200)
+    status = models.BooleanField(default=False)
+
+    @classmethod
+    def create(cls, user, room, text):
+        task = cls()
+        task.user = user
+        task.room = room
+        task.task = text
+        task.save()
+
+
+    def toggle_status(self):
+        self.status = not self.status
+        self.save()
+
+    def setUser(self, user):
+        self.user = user
+        self.save()
+
+    def __str__(self):
+        return f"{self.user} - {self.room} - {self.task} - {self.status}"

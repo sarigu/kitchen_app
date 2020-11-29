@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers
+from .models import User, Room, RoomForm, RoomMembers, Tasks
 
 # Create your views here.
 @login_required
@@ -41,10 +41,19 @@ def create_room(request):
 @login_required
 def enter_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
+    unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
+    assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user)
     context={
         'room': room,
-        'user': request.user,    
+        'user': request.user, 
+        'assignedTasks': assignedTasks, 
+        'unassignedTasks': unassignedTasks, 
     }
+
+    if request.method == 'POST' and 'takeBtn' in request.POST:
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.setUser(request.user)
     return render(request, 'kitchen_app/dashboard.html', context)
 
 @login_required
