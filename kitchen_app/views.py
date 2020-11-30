@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers, Tasks
+from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks
 
 # Create your views here.
 @login_required
@@ -129,3 +129,22 @@ def kitchen_fund(request, room_id):
         newTask = request.POST['task']
         Tasks.create(room, newTask, "kitchen")
     return render(request, 'kitchen_app/kitchen_fund.html', context)
+
+@login_required
+def weekly_cleaning(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    queryset = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(type="clean")
+    for elem in queryset:
+        task = get_object_or_404(Tasks, pk=elem.pk)
+    subtasks = Subtasks.objects.filter(task=task.pk)
+    context={  
+        'user': request.user,   
+        'room': room,
+        'subtasks': subtasks
+    }
+
+    if request.method == 'POST':
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Subtasks, pk=taskID)
+        task.toggle_status()
+    return render(request, 'kitchen_app/weekly_cleaning.html', context)

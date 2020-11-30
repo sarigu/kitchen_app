@@ -1,0 +1,23 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Weekly Cleaning{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Weekly Cleaning</h1>
+    {% if subtasks %}
+    {% for task in subtasks %}
+    <form class="list-group-item" action="{% url 'kitchen_app:weekly_cleaning' room.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="taskID" value="{{ task.pk }}">
+        <div>{{ task.taskDescription }} {{ task.status }}</div>
+        {% if task.status == False %}
+        <input type="submit" value="Done" name="doneBtn" class="btn btn-success">
+        {% else %}
+        <input type="submit" value="not done" name="doneBtn" class="btn btn-success">
+        {% endif %}
+    </form>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -13,9 +13,12 @@
         <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="taskID" value="{{ task.pk }}">
-            <div>{{ task.task }} {{ task.status }}</div>
-            <input type="checkbox" name="status" {% if task.status  %}checked{% endif %}>
+            <div>{{ task.task }} </div>
+            {% if task.type == "clean" %}
+            <a href="{% url 'kitchen_app:weekly_cleaning' room.pk %}">Cleaning link</a>
+            {% else %}
             <input type="submit" value="Done" name="doneBtn" class="btn btn-success">
+            {% endif %}
         </form>
         {% endfor %}
         {% endif %}

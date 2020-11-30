@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.forms import ModelForm
 from django.db.models.query import QuerySet
+from django.db.models.signals import post_save
 
 type_of_room_member = (
     ('admin', 'Admin'),
@@ -54,14 +55,43 @@ class Tasks (models.Model):
         task.type = type
         task.save()
 
+    def toggle_status(self):
+        self.status = not self.status
+        self.save()
+
+    def deleteTask(sender, instance, **kwargs):
+        print("hello delete")
+        queryset = Subtasks.objects.filter(task=instance.task.pk)
+        subtasks = []
+        doneTasks = []
+        for subtask in queryset: 
+            subtasks.append(subtask)
+            if(subtask.status == True):
+                doneTasks.append(subtask)
+
+        if(len(doneTasks) == len(subtasks)):
+            instance.task.status = True
+            instance.task.save()
+
+    def setUser(self, user):
+        self.user = user
+        self.save()
+    
+    def __str__(self):
+        return f"{self.user} - {self.room} - {self.task} - {self.type} - {self.status}"
+    
+
+class Subtasks (models.Model):
+    task = models.ForeignKey(Tasks, on_delete=models.CASCADE)
+    taskDescription = models.CharField(max_length=200)
+    status = models.BooleanField(default=False)
 
     def toggle_status(self):
         self.status = not self.status
         self.save()
 
-    def setUser(self, user):
-        self.user = user
-        self.save()
-
     def __str__(self):
-        return f"{self.user} - {self.room} - {self.task} - {self.type} - {self.status}"
+        return f"{self.task} - {self.pk} - {self.taskDescription} - {self.status}"
+
+
+post_save.connect(Tasks.deleteTask, sender=Subtasks)
