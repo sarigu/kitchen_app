@@ -10,8 +10,13 @@
         <h2>Your tasks</h2>
         {% if assignedTasks %}
         {% for task in assignedTasks %}
-        <div>{{ task.task }} {{ task.status }}</div>
-        <input type="checkbox" name="status" {% if task.status  %}checked{% endif %}>
+        <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="taskID" value="{{ task.pk }}">
+            <div>{{ task.task }} {{ task.status }}</div>
+            <input type="checkbox" name="status" {% if task.status  %}checked{% endif %}>
+            <input type="submit" value="Done" name="doneBtn" class="btn btn-success">
+        </form>
         {% endfor %}
         {% endif %}
     </div>
@@ -24,7 +29,8 @@
             {% csrf_token %}
             <input type="hidden" name="taskID" value="{{ task.pk }}">
             <div>{{ task.task }}</div>
-            <button name="takeTaskBtn" class="btn btn-lg btn-primary">Take task</button>
+            <button name="takeTaskBtn" class="btn btn-primary">Take task</button>
+            <button name="removeBtn" class="btn btn-danger">Remove</button>
         </form>
         {% endfor %}
         {% endif %}

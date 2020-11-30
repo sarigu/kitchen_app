@@ -13,8 +13,8 @@
         <span class="badge badge-light">{{ member.status }}</span>
         <br>
         {% if member.status == "member"  %}
-        <input type="submit" name="updateBtn" class="btn btn-lg btn-primary" value="make admin">
-        <input type="submit" name="removeBtn" class="btn btn-lg btn-danger" value="remove">
+        <input type="submit" name="updateBtn" class="btn btn-primary" value="make admin">
+        <input type="submit" name="removeBtn" class="btn btn-danger" value="remove">
         {% endif %}
     </form>
     {% endfor %}

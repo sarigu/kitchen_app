@@ -58,6 +58,16 @@ def enter_room(request, room_id):
     if request.method == 'POST' and 'addTaskBtn' in request.POST:
         newTask = request.POST['task']
         Tasks.create(room, newTask, "anything")
+
+    if request.method == 'POST' and 'doneBtn' in request.POST:
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.delete()
+
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.delete()
     return render(request, 'kitchen_app/dashboard.html', context)
 
 @login_required
