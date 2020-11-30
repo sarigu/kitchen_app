@@ -44,12 +44,14 @@ class Tasks (models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     task = models.CharField(max_length=200)
     status = models.BooleanField(default=False)
+    type = models.CharField(max_length=50, null=True, blank=True)
 
     @classmethod
-    def create(cls, room, text):
+    def create(cls, room, text, type):
         task = cls()
         task.room = room
         task.task = text
+        task.type = type
         task.save()
 
 
@@ -62,4 +64,4 @@ class Tasks (models.Model):
         self.save()
 
     def __str__(self):
-        return f"{self.user} - {self.room} - {self.task} - {self.status}"
+        return f"{self.user} - {self.room} - {self.task} - {self.type} - {self.status}"

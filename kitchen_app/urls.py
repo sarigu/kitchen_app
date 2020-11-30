@@ -11,4 +11,5 @@ urlpatterns = [
    path('enter_room/<int:room_id>/', views.enter_room, name='enter_room'),
    path('members/<int:room_id>/', views.members, name='members'),
    path('profile/', views.profile, name='profile'),
+   path('kitchen_fund/<int:room_id>/', views.kitchen_fund, name='kitchen_fund'),
 ]

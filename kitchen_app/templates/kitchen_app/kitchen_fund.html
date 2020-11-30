@@ -1,0 +1,31 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div>
+    <h1>This is the kitchen fund page</h1>
+    <hr>
+    <div>
+        <h2>Amount</h2>
+    </div>
+    <hr>
+    <div>
+        <h2>What to get</h2>
+        <ul class="list-group">
+            {% if tasks %}
+            {% for task in tasks %}
+            <li class="list-group-item"> {{ task.task }} </li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+        <hr>
+        <form class="list-group-item" action="{% url 'kitchen_app:kitchen_fund' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="task" placeholder="task">
+            <input class="btn btn-primary" name="addBtn" type="submit" value="Add what to get">
+        </form>
+    </div>
+</div>
+</div>
+{% endblock %}

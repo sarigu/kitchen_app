@@ -57,7 +57,7 @@ def enter_room(request, room_id):
 
     if request.method == 'POST' and 'addTaskBtn' in request.POST:
         newTask = request.POST['task']
-        Tasks.create(room, newTask)
+        Tasks.create(room, newTask, "anything")
     return render(request, 'kitchen_app/dashboard.html', context)
 
 @login_required
@@ -96,3 +96,19 @@ def profile(request):
         'user': request.user
     }
     return render(request, 'kitchen_app/profile.html', context)
+
+@login_required
+def kitchen_fund(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
+    
+    context = {
+        'user': request.user,   
+        'room': room,
+        'tasks': tasks,
+    }
+
+    if request.method == 'POST' and 'addBtn' in request.POST:
+        newTask = request.POST['task']
+        Tasks.create(room, newTask, "kitchen")
+    return render(request, 'kitchen_app/kitchen_fund.html', context)
