@@ -6,6 +6,7 @@
 
 <h1>Hello you! {{ user.username }}</h1>
 <div class="container d-flex ">
+    {% if rooms %}
     {% for room in rooms %}
     <div class="card-deck text-center">
         <div class="card ">
@@ -21,6 +22,9 @@
     </div>
     </a>
     {% endfor %}
+    {% else %}
+    <div>No rooms</div>
+    {% endif %}
 
 </div>
 

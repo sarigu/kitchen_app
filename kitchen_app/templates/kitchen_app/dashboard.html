@@ -24,10 +24,16 @@
             {% csrf_token %}
             <input type="hidden" name="taskID" value="{{ task.pk }}">
             <div>{{ task.task }}</div>
-            <button name="takeBtn" class="btn btn-lg btn-primary">Take task</button>
+            <button name="takeTaskBtn" class="btn btn-lg btn-primary">Take task</button>
         </form>
         {% endfor %}
         {% endif %}
+        <hr>
+        <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="task" placeholder="task">
+            <input class="btn btn-primary" name="addTaskBtn" type="submit" value="Add a task">
+        </form>
     </div>
 </div>
 {% endblock %}

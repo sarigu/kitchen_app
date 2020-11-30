@@ -46,9 +46,8 @@ class Tasks (models.Model):
     status = models.BooleanField(default=False)
 
     @classmethod
-    def create(cls, user, room, text):
+    def create(cls, room, text):
         task = cls()
-        task.user = user
         task.room = room
         task.task = text
         task.save()

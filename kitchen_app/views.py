@@ -50,10 +50,14 @@ def enter_room(request, room_id):
         'unassignedTasks': unassignedTasks, 
     }
 
-    if request.method == 'POST' and 'takeBtn' in request.POST:
+    if request.method == 'POST' and 'takeTaskBtn' in request.POST:
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.setUser(request.user)
+
+    if request.method == 'POST' and 'addTaskBtn' in request.POST:
+        newTask = request.POST['task']
+        Tasks.create(room, newTask)
     return render(request, 'kitchen_app/dashboard.html', context)
 
 @login_required
