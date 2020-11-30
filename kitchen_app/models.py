@@ -37,7 +37,7 @@ class RoomMembers (models.Model):
         roomMember.save()
 
     def __str__(self):
-        return f"{self.user} - {self.room} - {self.status} - {self.created_at}"
+        return f"{self.user} - {self.user.pk} - {self.room} - {self.status} - {self.created_at}"
 
 class Tasks (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

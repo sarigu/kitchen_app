@@ -88,6 +88,13 @@ def members(request, room_id):
         user = get_object_or_404(User, pk=userID)
         RoomMembers.create(user, room, "member")
 
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        memberID = request.POST['memberID']
+        queryset = RoomMembers.objects.filter(room=room_id)
+        member = get_object_or_404(queryset, user=memberID)
+        member.delete()
+     
+
     return render(request, 'kitchen_app/members.html', context)
 
 @login_required
