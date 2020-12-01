@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks
+import calendar
+from django.utils.safestring import mark_safe
+
 
 # Create your views here.
 @login_required
@@ -153,14 +156,22 @@ def weekly_cleaning(request, room_id):
 def schedule(request, room_id):
     room = get_object_or_404(Room, pk=room_id)  
     members = RoomMembers.objects.filter(room=room_id) 
-    context={  
-        'user': request.user,   
-        'room': room,
-        'members': members
-    }
+  
 
     if request.method == 'POST':
         print(request.POST['week'])
         print(request.POST['members_choice'])
+    
+    #print(calendar.calendar(2020))
+
+    cal = calendar.HTMLCalendar(firstweekday=0)
+    html_cal = cal.formatyear(2020, width=3)
+
+    context={  
+        'user': request.user,   
+        'room': room,
+        'members': members,
+        'calendar': mark_safe(html_cal),
+    }
 
     return render(request, 'kitchen_app/cleaning_schedule.html', context)

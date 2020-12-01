@@ -7,6 +7,9 @@
     <h1>Cleaning Schedule</h1>
     <hr>
     <div>
+        {{ calendar }}
+    </div>
+    <div>
         <h2>Create Weekly Schedule</h2>
         <form action="{% url 'kitchen_app:schedule' room.pk %}" method="POST">
             {% csrf_token %}
