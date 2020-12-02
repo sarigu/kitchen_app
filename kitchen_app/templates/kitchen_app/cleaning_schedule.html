@@ -6,8 +6,39 @@
 <div>
     <h1>Cleaning Schedule</h1>
     <hr>
+
     <div>
-        {{ calendar }}
+        {% if weeks %}
+
+        <ul class="list-group">
+            {% for week in weeks %}
+            <li class="list-group-item d-inline-flex">
+                <div class="p-2">
+                    <h2>Week</h2>
+                    {{ week.week }}
+                </div>
+                <div class="p-2">
+                    <h2>Start</h2>
+                    {{ week.weekStart }}
+                </div>
+                <div class="p-2">
+                    <h2>End</h2>
+                    {{ week.weekEnd }}
+                </div>
+                {% for takenWeek in takenWeeks %}
+                {% if takenWeek.week == week.week %}
+                <div class="p-2 taken">
+                    <h2>User</h2>
+                    {{ takenWeek.user }}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% endif %}
+
     </div>
     <div>
         <h2>Create Weekly Schedule</h2>
@@ -24,4 +55,14 @@
     </div>
 
 </div>
+{% endblock %}
+{% block footer %}
+<script>
+    var elem = document.querySelectorAll(".taken");
+    for (let i = 0; i < elem.length; i++) {
+        elem[i].parentNode.style.backgroundColor = "lightgreen";
+    }
+
+
+</script>
 {% endblock %}

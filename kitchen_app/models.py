@@ -46,13 +46,16 @@ class Tasks (models.Model):
     task = models.CharField(max_length=200)
     status = models.BooleanField(default=False)
     type = models.CharField(max_length=50, null=True, blank=True)
+    deadline = models.CharField(max_length=10, null=True, blank=True)
 
     @classmethod
-    def create(cls, room, text, type):
+    def create(cls, user, room, text, type, deadline):
         task = cls()
+        task.user = user
         task.room = room
         task.task = text
         task.type = type
+        task.deadline = deadline
         task.save()
 
     def toggle_status(self):
@@ -60,7 +63,6 @@ class Tasks (models.Model):
         self.save()
 
     def deleteTask(sender, instance, **kwargs):
-        print("hello delete")
         queryset = Subtasks.objects.filter(task=instance.task.pk)
         subtasks = []
         doneTasks = []
@@ -78,7 +80,7 @@ class Tasks (models.Model):
         self.save()
     
     def __str__(self):
-        return f"{self.user} - {self.room} - {self.task} - {self.type} - {self.status}"
+        return f"{self.user} - {self.room} - {self.task} - {self.type} - {self.status} - {self.deadline}"
     
 
 class Subtasks (models.Model):

@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks
 import calendar
 from django.utils.safestring import mark_safe
+from datetime import date
+from isoweek import Week
 
 
 # Create your views here.
@@ -60,7 +62,7 @@ def enter_room(request, room_id):
 
     if request.method == 'POST' and 'addTaskBtn' in request.POST:
         newTask = request.POST['task']
-        Tasks.create(room, newTask, "anything")
+        Tasks.create(None, room, newTask, "anything", None)
 
     if request.method == 'POST' and 'doneBtn' in request.POST:
         taskID = request.POST['taskID']
@@ -130,7 +132,7 @@ def kitchen_fund(request, room_id):
 
     if request.method == 'POST' and 'addBtn' in request.POST:
         newTask = request.POST['task']
-        Tasks.create(room, newTask, "kitchen")
+        Tasks.create(None, room, newTask, "kitchen", None)
     return render(request, 'kitchen_app/kitchen_fund.html', context)
 
 @login_required
@@ -156,22 +158,34 @@ def weekly_cleaning(request, room_id):
 def schedule(request, room_id):
     room = get_object_or_404(Room, pk=room_id)  
     members = RoomMembers.objects.filter(room=room_id) 
-  
 
     if request.method == 'POST':
-        print(request.POST['week'])
-        print(request.POST['members_choice'])
+        dueToWeek = Week.fromstring(request.POST['week'])
+        assignedUser = request.POST['members_choice']
+        user = get_object_or_404(User, username=assignedUser)  
+        Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
     
-    #print(calendar.calendar(2020))
+    weeks = []
+    i = 1
+    takenWeeks = []
+    queryset = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
+    for takenWeek in queryset:
+        takenWeeks.append({'week': takenWeek.deadline, 'user': takenWeek.user})
+ 
 
-    cal = calendar.HTMLCalendar(firstweekday=0)
-    html_cal = cal.formatyear(2020, width=3)
+    while i <= 52:
+        w = Week(2020, i)
+        week = {'week': w.isoformat(), 'weekStart': w.monday().isoformat(), 'weekEnd': w.sunday().isoformat(), 'deadline': None, 'user': None  }
+        weeks.append(week)
+        i += 1
+
 
     context={  
         'user': request.user,   
         'room': room,
         'members': members,
-        'calendar': mark_safe(html_cal),
+        'weeks': weeks,
+        'takenWeeks': takenWeeks
     }
 
     return render(request, 'kitchen_app/cleaning_schedule.html', context)
