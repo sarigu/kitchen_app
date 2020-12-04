@@ -9,6 +9,13 @@ type_of_room_member = (
     ('member', 'Member'),
 )
 
+event_type_choices = (
+    ('getTogether', 'GetTogether'),
+    ('kitchenMeeting', 'KitchenMeeting'),
+    ('kitchenCleaning', 'kitchenCleaning'),
+)
+
+
 
 class Room (models.Model):
     name = models.CharField(max_length=100)
@@ -97,3 +104,28 @@ class Subtasks (models.Model):
 
 
 post_save.connect(Tasks.deleteTask, sender=Subtasks)
+
+class Events (models.Model):
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=200)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    type = models.CharField(max_length=20, choices=event_type_choices, default="getTogether")
+    start_date = models.DateField()
+    end_date =  models.DateField()
+    created_at = models.DateField(auto_now_add=True)
+    
+    @classmethod
+    def create(cls, title, description, room, type, start_date, end_date):
+        event = cls()
+        event.title = title
+        event.description = description
+        event.room = room
+        event.type = type
+        event.start_date = start_date
+        event.end_date = end_date
+        event.created_at = models.DateTimeField(auto_now_add=True)
+        event.save()
+
+    def __str__(self):
+        return f"{self.title} - {self.description} - {self.room} - {self.start_date} - {self.end_date} - {self.created_at}"
+

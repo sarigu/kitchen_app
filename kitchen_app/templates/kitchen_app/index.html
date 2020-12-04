@@ -15,12 +15,12 @@
             </div>
             <div class="card-body">
                 <a href="{% url 'kitchen_app:enter_room' room.pk %}" class="btn btn-lg btn-block btn-outline-primary">
-                    Enter Room</a>
+                    Enter Room
+                </a>
 
             </div>
         </div>
     </div>
-    </a>
     {% endfor %}
     {% else %}
     <div>No rooms</div>
@@ -47,7 +47,7 @@
                 <form action="{% url 'kitchen_app:create_room' %}" method="POST">
                     {% csrf_token %}
                     <input required type="text" name="name" placeholder="room name">
-                    <input type="submit" value="Create room">
+                    <input type="submit" class="btn btn-primary" value="Create room">
                 </form>
             </div>
             <div class="modal-footer">

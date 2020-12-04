@@ -25,6 +25,44 @@
     </div>
     <hr>
     <div>
+        <h2>Upcoming events</h2>
+        <div class="container d-flex ">
+            {% if events %}
+            {% for event in events %}
+            <div class="card-deck text-center">
+                <div class="card ">
+                    <div class="card-header" {% if event.type == "kitchenMeeting" %} style="background-color: pink"
+                        {% elif event.type == "kitchenCleaning" %} style="background-color: paleturquoise" {% else %}
+                        style="background-color: lightgreen" {% endif %}>
+                        <h4 class="my-0 font-weight-normal">{{event.title}}</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if event.start_date == event.end_date %}
+                        <p>on the {{ event.start_date }}</p>
+                        {% else %}
+                        <p>from the {{ event.start_date }} to {{ event.end_date }}</p>
+                        {% endif %}
+                        <a href="#" class="btn btn-lg btn-block btn-outline-primary">
+                            See event
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+            {% else %}
+            <div>No events</div>
+            {% endif %}
+
+        </div>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Create an event
+        </button>
+    </div>
+    <hr>
+    <div>
         <h2>Tasks to take</h2>
         {% if unassignedTasks %}
         {% for task in unassignedTasks %}
@@ -44,5 +82,62 @@
             <input class="btn btn-primary" name="addTaskBtn" type="submit" value="Add a task">
         </form>
     </div>
+    <hr>
+    <div>
+        <h2>Notes</h2>
+    </div>
+    <hr>
+    <div>
+        <h2>Events</h2>
+    </div>
 </div>
+{% endblock %}
+{% block footer %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create an event</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'kitchen_app:create_event' room.pk %}" method="POST">
+                    {% csrf_token %}
+                    <label for="title">Title</label>
+                    <input required type="text" maxlength="100" name="title" placeholder="event title"><br>
+                    <label for="description">Description</label>
+                    <input required type="text" maxlength="200" name="description" placeholder="event description"><br>
+                    <label for="start">Start</label>
+                    <input required type="date" name="start" placeholder="start date"><br>
+                    <label for="end">End</label>
+                    <input required type="date" name="end" placeholder="end date"><br>
+                    <label for="type">Type</label>
+                    <select name="type" id="type">
+                        <option value="getTogether">Get Together</option>
+                        <option value="kitchenMeeting">Kitchen Meeting</option>
+                        <option value="kitchenCleaning">Kitchen Cleaning</option>
+                    </select>
+                    <br>
+                    <input type="submit" class="btn btn-primary" value="Create event">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 {% endblock %}
