@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments
+from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes
 import calendar
 from django.utils.safestring import mark_safe
 from datetime import date
@@ -53,6 +53,13 @@ def enter_room(request, room_id):
     posts = Posts.objects.filter(room=room_id)
     comments = Comments.objects.filter(room=room_id)
 
+    postLikes = []
+
+    for elem in posts:
+        post = get_object_or_404(Posts, pk=elem.pk)
+        likes = post.likes.all()
+        postLike = {'numberOfLikes' : len(likes), 'post': post }
+        postLikes.append(postLike)
 
     context={
         'room': room,
@@ -61,7 +68,8 @@ def enter_room(request, room_id):
         'unassignedTasks': unassignedTasks, 
         'events': events,
         'posts': posts,
-        'comments': comments
+        'comments': comments,
+        'postLikes': postLikes,
     }
 
     if request.method == 'POST' and 'takeTaskBtn' in request.POST:

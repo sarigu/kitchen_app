@@ -3,6 +3,8 @@ from django.db import models
 from django.forms import ModelForm
 from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 
 type_of_room_member = (
@@ -16,6 +18,10 @@ event_type_choices = (
     ('kitchenCleaning', 'kitchenCleaning'),
 )
 
+type_of_like = (
+    ('post', 'Post'),
+    ('comment', 'Comment'),
+)
 
 
 class Room (models.Model):
@@ -128,13 +134,25 @@ class Events (models.Model):
         event.save()
 
     def __str__(self):
-        return f"{self.title} - {self.description} - {self.room} - {self.start_date} - {self.end_date} - {self.created_at}"
+        return f"{self.title}- {self.pk} - {self.description} - {self.room} - {self.start_date} - {self.end_date} - {self.created_at}"
 
+class Likes (models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    type = models.CharField(max_length=10, choices=type_of_like)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+
+    def __str__(self):
+        return f"{self.user} - {self.room} - {self.type} - {self.content_type} - {self.object_id} - {self.content_object}"
 
 class Posts (models.Model):
     text = models.CharField(max_length=500)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    likes = GenericRelation(Likes,related_query_name='likes')
     created_at = models.DateField(auto_now_add=True)
 
     @classmethod
@@ -168,5 +186,6 @@ class Comments (models.Model):
         comment.save()
 
     def __str__(self):
-        return f"{self.text} - {self.user} - {self.created_at} - {self.parent}"
+        return f"{self.text} - {self.pk} - {self.user} - {self.created_at} - {self.parent}"
+
 

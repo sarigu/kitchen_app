@@ -99,7 +99,13 @@
                         <h4 class="mb-0"> {{ post.text }}</h4>
                         <p class="card-text mb-auto">by {{ post.user }}</p>
                         <p class="card-text mb-auto">on the {{ post.created_at }}</p>
-                        <p>Likes: 0 </p>
+                        {% if postLikes %}
+                        {% for like in postLikes %}
+                        {% if like.post.pk == post.pk %}
+                        <span class="badge badge-primary">Likes: {{ like.numberOfLikes }} </span>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
                         {% if comments %}
                         {% for comment in comments %}
                         {% if comment.parent.pk == post.pk %}
