@@ -100,7 +100,29 @@
                         <p class="card-text mb-auto">by {{ post.user }}</p>
                         <p class="card-text mb-auto">on the {{ post.created_at }}</p>
                         <p>Likes: 0 </p>
-                        <button class="btn btn-light">Comment</button>
+                        {% if comments %}
+                        {% for comment in comments %}
+                        {% if comment.parent.pk == post.pk %}
+                        <div style="background-color: rgb(226, 226, 226); border-radius: 10px; padding:10px;">
+                            {{ comment.text }}<br>
+                            by {{ comment.user }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        <div id="comment-section + {{ post.pk }}" style="display: none">
+                            <form action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="postID" value="{{ post.pk }}">
+                                <textarea name="comment" id="comment" rows="4"></textarea>
+                                <input class="btn btn-dark" name="commentBtn" type="submit" value="Comment">
+
+                            </form>
+                            <button class="btn btn-dark"
+                                onClick="document.getElementById('comment-section + {{ post.pk }}').style.display = 'none';">Close</button>
+                        </div>
+                        <button class="btn btn-light"
+                            onClick="document.getElementById('comment-section + {{ post.pk }}').style.display = 'block';">Comment</button>
                         <button class="btn btn-light">Like</button>
                     </div>
 

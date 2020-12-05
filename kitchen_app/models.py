@@ -151,12 +151,22 @@ class Posts (models.Model):
 
 
 class Comments (models.Model):
-    text = models.CharField(max_length=500)
+    text = models.CharField(max_length=250)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     parent = models.ForeignKey(Posts, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     created_at = models.DateField(auto_now_add=True)
 
+    @classmethod
+    def create(cls, text, user, parent, room):
+        comment = cls()
+        comment.text = text
+        comment.user = user
+        comment.parent = parent
+        comment.room = room
+        comment.created_at = models.DateTimeField(auto_now_add=True)
+        comment.save()
+
     def __str__(self):
-        return f"{self.text} - {self.user} - {self.room} - {self.created_at} - {self.parent}"
+        return f"{self.text} - {self.user} - {self.created_at} - {self.parent}"
 

@@ -51,6 +51,8 @@ def enter_room(request, room_id):
     assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user)
     events = Events.objects.filter(room=room_id)
     posts = Posts.objects.filter(room=room_id)
+    comments = Comments.objects.filter(room=room_id)
+
 
     context={
         'room': room,
@@ -59,6 +61,7 @@ def enter_room(request, room_id):
         'unassignedTasks': unassignedTasks, 
         'events': events,
         'posts': posts,
+        'comments': comments
     }
 
     if request.method == 'POST' and 'takeTaskBtn' in request.POST:
@@ -83,7 +86,13 @@ def enter_room(request, room_id):
     if request.method == 'POST' and 'addPostBtn' in request.POST:
         postText = request.POST['post']
         Posts.create(postText, request.user, room)
-        
+
+    if request.method == 'POST' and 'commentBtn' in request.POST:
+        text = request.POST['comment']
+        postID = request.POST['postID']
+        parentPost = get_object_or_404(Posts, pk=postID)
+        Comments.create(text, request.user, parentPost, room )
+ 
     return render(request, 'kitchen_app/dashboard.html', context)
 
 @login_required
