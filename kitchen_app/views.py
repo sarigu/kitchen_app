@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events
+from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments
 import calendar
 from django.utils.safestring import mark_safe
 from datetime import date
@@ -50,12 +50,15 @@ def enter_room(request, room_id):
     unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
     assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user)
     events = Events.objects.filter(room=room_id)
+    posts = Posts.objects.filter(room=room_id)
+
     context={
         'room': room,
         'user': request.user, 
         'assignedTasks': assignedTasks, 
         'unassignedTasks': unassignedTasks, 
         'events': events,
+        'posts': posts,
     }
 
     if request.method == 'POST' and 'takeTaskBtn' in request.POST:
@@ -76,6 +79,11 @@ def enter_room(request, room_id):
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.delete()
+
+    if request.method == 'POST' and 'addPostBtn' in request.POST:
+        postText = request.POST['post']
+        Posts.create(postText, request.user, room)
+        
     return render(request, 'kitchen_app/dashboard.html', context)
 
 @login_required

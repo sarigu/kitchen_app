@@ -88,11 +88,36 @@
     <hr>
     <div>
         <h2>Notes</h2>
+        <div class="row mb-2">
+            {% if posts %}
+            {% for post in posts %}
+            <div class="col-md-6">
+                <div
+                    class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <h4 class="mb-0"> {{ post.text }}</h4>
+                        <p class="card-text mb-auto">by {{ post.user }}</p>
+                        <p class="card-text mb-auto">on the {{ post.created_at }}</p>
+                        <p>Likes: 0 </p>
+                        <button class="btn btn-light">Comment</button>
+                        <button class="btn btn-light">Like</button>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>no posts</p>
+            {% endif %}
+        </div>
+        <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+            {% csrf_token %}
+            <textarea type="text" name="post" rows="5"> Post </textarea><br>
+            <input class="btn btn-primary" name="addPostBtn" type="submit" value="Add a post">
+        </form>
     </div>
     <hr>
-    <div>
-        <h2>Events</h2>
-    </div>
 </div>
 {% endblock %}
 {% block footer %}

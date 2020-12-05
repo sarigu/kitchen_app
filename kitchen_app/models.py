@@ -3,6 +3,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.db.models.query import QuerySet
 from django.db.models.signals import post_save
+from django.contrib.contenttypes.fields import GenericRelation
 
 type_of_room_member = (
     ('admin', 'Admin'),
@@ -128,4 +129,34 @@ class Events (models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.description} - {self.room} - {self.start_date} - {self.end_date} - {self.created_at}"
+
+
+class Posts (models.Model):
+    text = models.CharField(max_length=500)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    created_at = models.DateField(auto_now_add=True)
+
+    @classmethod
+    def create(cls, text, user, room):
+        post = cls()
+        post.text = text
+        post.user = user
+        post.room = room
+        post.created_at = models.DateTimeField(auto_now_add=True)
+        post.save()
+
+    def __str__(self):
+        return f"{self.text} -  {self.user} -  {self.room} - {self.created_at}"
+
+
+class Comments (models.Model):
+    text = models.CharField(max_length=500)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Posts, on_delete=models.CASCADE)
+    created_at = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.text} - {self.user} - {self.room} - {self.created_at} - {self.parent}"
 
