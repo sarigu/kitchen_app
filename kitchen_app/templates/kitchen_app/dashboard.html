@@ -21,6 +21,8 @@
             {% endif %}
         </form>
         {% endfor %}
+        {% else %}
+        <div>No tasks</div>
         {% endif %}
     </div>
     <hr>
@@ -42,7 +44,8 @@
                         {% else %}
                         <p>from the {{ event.start_date }} to {{ event.end_date }}</p>
                         {% endif %}
-                        <a href="#" class="btn btn-lg btn-block btn-outline-primary">
+                        <a href="{% url 'kitchen_app:event' room.pk event.pk %}"
+                            class="btn btn-lg btn-block btn-outline-primary">
                             See event
                         </a>
 

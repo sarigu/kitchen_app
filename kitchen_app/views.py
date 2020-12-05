@@ -6,6 +6,7 @@ import calendar
 from django.utils.safestring import mark_safe
 from datetime import date
 from isoweek import Week
+from django.db import IntegrityError
 
 
 # Create your views here.
@@ -161,26 +162,15 @@ def schedule(request, room_id):
     room = get_object_or_404(Room, pk=room_id)  
     members = RoomMembers.objects.filter(room=room_id) 
 
-    if request.method == 'POST':
-        dueToWeek = Week.fromstring(request.POST['week'])
-        assignedUser = request.POST['members_choice']
-        user = get_object_or_404(User, username=assignedUser)  
-        Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
-    
+    takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
+
     weeks = []
     i = 1
-    takenWeeks = []
-    queryset = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
-    for takenWeek in queryset:
-        takenWeeks.append({'week': takenWeek.deadline, 'user': takenWeek.user})
- 
-
     while i <= 52:
         w = Week(2020, i)
         week = {'week': w.isoformat(), 'weekStart': w.monday().isoformat(), 'weekEnd': w.sunday().isoformat(), 'deadline': None, 'user': None  }
         weeks.append(week)
         i += 1
-
 
     context={  
         'user': request.user,   
@@ -190,6 +180,26 @@ def schedule(request, room_id):
         'takenWeeks': takenWeeks
     }
 
+    taken = False
+  
+    if request.method == 'POST':
+        try: 
+            dueToWeek = Week.fromstring(request.POST['week'])
+            if takenWeeks: 
+                for takenWeek in takenWeeks:
+                    if dueToWeek.isoformat() == takenWeek.deadline:
+                        context['error'] = "Week is taken"
+                        taken = True
+               
+            if taken == False:
+                assignedUser = request.POST['members_choice']
+                user = get_object_or_404(User, username=assignedUser)  
+                Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
+                takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
+                context['takenWeeks'] = takenWeeks
+        except IntegrityError as e:
+            context['error'] = "Week is taken"
+                        
     return render(request, 'kitchen_app/cleaning_schedule.html', context)
 
 @login_required
@@ -216,3 +226,14 @@ def create_event(request, room_id):
         Events.create(title, description, room, type, startDate, endDate)
 
     return render(request, 'kitchen_app/dashboard.html', context)
+
+@login_required
+def event(request, room_id, event_id):
+    room = get_object_or_404(Room, pk=room_id)
+    event = get_object_or_404(Events, pk=event_id)
+    context={  
+        'user': request.user,   
+        'room': room,
+        'event': event,
+    }
+    return render(request, 'kitchen_app/event_details.html', context)

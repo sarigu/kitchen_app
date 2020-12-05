@@ -6,7 +6,7 @@
 <div>
     <h1>Cleaning Schedule</h1>
     <hr>
-
+    {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
     <div>
         {% if weeks %}
 
@@ -26,7 +26,7 @@
                     {{ week.weekEnd }}
                 </div>
                 {% for takenWeek in takenWeeks %}
-                {% if takenWeek.week == week.week %}
+                {% if takenWeek.deadline == week.week %}
                 <div class="p-2 taken">
                     <h2>User</h2>
                     {{ takenWeek.user }}
@@ -44,7 +44,7 @@
         <h2>Create Weekly Schedule</h2>
         <form action="{% url 'kitchen_app:schedule' room.pk %}" method="POST">
             {% csrf_token %}
-            <input type="week" id="week" name="week">
+            <input required type="week" id="week" name="week">
             <select name="members_choice" id="members_choice">
                 {% for member in members %}
                 <option value="{{ member.user.username }}">{{ member.user.username }}</option>

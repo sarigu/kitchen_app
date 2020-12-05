@@ -1,0 +1,19 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Event Details{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Event Details</h1>
+    <div>
+        <h3>Title</h3>{{ event.title }}
+        <h3>Description</h3>{{ event.description }}
+        {% if event.start_date == event.end_date %}
+        <h3>on the</h3>{{ event.start_date }}
+        {% else %}
+        <h3>From</h3>{{ event.start_date }}
+        <h3>Until</h3>{{ event.end_date }}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
