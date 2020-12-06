@@ -110,8 +110,20 @@
                         {% for comment in comments %}
                         {% if comment.parent.pk == post.pk %}
                         <div style="background-color: rgb(226, 226, 226); border-radius: 10px; padding:10px;">
-                            {{ comment.text }}<br>
-                            by {{ comment.user }}
+                            <h6>{{ comment.text }}</h6>
+                            <p>by {{ comment.user }}</p>
+                            {% if commentLikes %}
+                            {% for like in commentLikes %}
+                            {% if like.comment.pk == comment.pk %}
+                            <span class="badge badge-primary">Likes: {{ like.numberOfLikes }} </span>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                            <form action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="commentID" value="{{ comment.pk }}">
+                                <button class="btn btn-light" name="commentLikeBtn">Like</button>
+                            </form>
                         </div>
                         {% endif %}
                         {% endfor %}

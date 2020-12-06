@@ -86,16 +86,30 @@ def enter_room(request, room_id):
         content_type = ContentType.objects.get_for_model(Posts)
         Likes.create(request.user, room, "post", content_type, postID)
     
-    
+    if request.method == 'POST' and 'commentLikeBtn' in request.POST:
+        commentID = request.POST['commentID']
+        content_type = ContentType.objects.get_for_model(Comments)
+        Likes.create(request.user, room, "comment", content_type, commentID)
+      
+
     postLikes = []
+    commentLikes = []
 
     for elem in posts:
         post = get_object_or_404(Posts, pk=elem.pk)
         likes = post.likes.all()
         postLike = {'numberOfLikes' : len(likes), 'post': post }
         postLikes.append(postLike)
+    
 
-    context={
+    for elem in comments:
+        comment = get_object_or_404(Comments, pk=elem.pk)
+        likes = comment.likes.all()
+        commentLike = {'numberOfLikes' : len(likes), 'comment': comment }
+        commentLikes.append(commentLike)
+
+
+    context = {
         'room': room,
         'user': request.user, 
         'assignedTasks': assignedTasks, 
@@ -104,6 +118,8 @@ def enter_room(request, room_id):
         'posts': posts,
         'comments': comments,
         'postLikes': postLikes,
+        'commentLikes': commentLikes,
+      
     }
  
     return render(request, 'kitchen_app/dashboard.html', context)
