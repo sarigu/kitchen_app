@@ -144,7 +144,7 @@ def members(request, room_id):
 
     if request.method == 'POST' and 'updateBtn' in request.POST:
         memberID = request.POST['memberID']
-        member = get_object_or_404(RoomMembers, user=memberID)
+        member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=memberID)
         member.status = "admin"
         member.save()
     if request.method == 'POST' and 'searchBtn' in request.POST:
@@ -162,8 +162,7 @@ def members(request, room_id):
 
     if request.method == 'POST' and 'removeBtn' in request.POST:
         memberID = request.POST['memberID']
-        queryset = RoomMembers.objects.filter(room=room_id)
-        member = get_object_or_404(queryset, user=memberID)
+        member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=memberID)
         member.delete()
     
     members = RoomMembers.objects.filter(room=room_id)
