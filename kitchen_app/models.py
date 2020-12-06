@@ -182,7 +182,7 @@ class Comments (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     parent = models.ForeignKey(Posts, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    likes = GenericRelation(Likes,related_query_name='likes')
+    likes = GenericRelation(Likes, related_query_name='likes')
     created_at = models.DateField(auto_now_add=True)
 
     @classmethod

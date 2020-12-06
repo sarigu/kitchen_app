@@ -48,7 +48,6 @@
                             class="btn btn-lg btn-block btn-outline-primary">
                             See event
                         </a>
-
                     </div>
                 </div>
             </div>
@@ -94,7 +93,6 @@
             <div class="col-md-6">
                 <div
                     class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-
                     <div class="col p-4 d-flex flex-column position-static">
                         <h4 class="mb-0"> {{ post.text }}</h4>
                         <p class="card-text mb-auto">by {{ post.user }}</p>
@@ -109,7 +107,8 @@
                         {% if comments %}
                         {% for comment in comments %}
                         {% if comment.parent.pk == post.pk %}
-                        <div style="background-color: rgb(226, 226, 226); border-radius: 10px; padding:10px;">
+                        <div
+                            style="background-color: rgb(226, 226, 226); border-radius: 10px; padding:10px; margin:10px;">
                             <h6>{{ comment.text }}</h6>
                             <p>by {{ comment.user }}</p>
                             {% if commentLikes %}

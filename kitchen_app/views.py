@@ -83,13 +83,19 @@ def enter_room(request, room_id):
 
     if request.method == 'POST' and 'likeBtn' in request.POST:
         postID = request.POST['postID']
-        content_type = ContentType.objects.get_for_model(Posts)
-        Likes.create(request.user, room, "post", content_type, postID)
+        post = get_object_or_404(Posts, pk=postID)
+        likes = post.likes.all()
+        if likes.filter(user=request.user).exists() == False:
+            content_type = ContentType.objects.get_for_model(Posts)
+            Likes.create(request.user, room, "post", content_type, postID)
     
     if request.method == 'POST' and 'commentLikeBtn' in request.POST:
         commentID = request.POST['commentID']
-        content_type = ContentType.objects.get_for_model(Comments)
-        Likes.create(request.user, room, "comment", content_type, commentID)
+        comment = get_object_or_404(Comments, pk=commentID)
+        likes = comment.likes.all()
+        if likes.filter(user=request.user).exists() == False:
+            content_type = ContentType.objects.get_for_model(Comments)
+            Likes.create(request.user, room, "comment", content_type, commentID)
       
 
     postLikes = []
