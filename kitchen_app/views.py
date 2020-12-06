@@ -46,6 +46,7 @@ def create_room(request):
 @login_required
 def enter_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
+    roomMembers = RoomMembers.objects.filter(room=room_id)
     unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
     assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user)
     events = Events.objects.filter(room=room_id)
@@ -125,6 +126,7 @@ def enter_room(request, room_id):
         'comments': comments,
         'postLikes': postLikes,
         'commentLikes': commentLikes,
+        'roomMembers': roomMembers,
       
     }
  
@@ -163,14 +165,19 @@ def members(request, room_id):
         queryset = RoomMembers.objects.filter(room=room_id)
         member = get_object_or_404(queryset, user=memberID)
         member.delete()
+    
+    members = RoomMembers.objects.filter(room=room_id)
+    context['members'] = members
      
 
     return render(request, 'kitchen_app/members.html', context)
 
 @login_required
-def profile(request):
+def profile(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
     context = { 
-        'user': request.user
+        'user': request.user,
+        'room': room,
     }
     return render(request, 'kitchen_app/profile.html', context)
 
@@ -213,8 +220,8 @@ def weekly_cleaning(request, room_id):
 def schedule(request, room_id):
     room = get_object_or_404(Room, pk=room_id)  
     members = RoomMembers.objects.filter(room=room_id) 
-
     takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
+    print(takenWeeks)
 
     weeks = []
     i = 1

@@ -28,9 +28,9 @@
     <fieldset>
         <div>
             {% if search_term %}
-            <input type="search" id="name" name="name" value="{{ search_term }}">
+            <input type="text" id="name" name="name" value="{{ search_term }}">
             {% else %}
-            <input type="search" id="name" name="name" placeholder="Name to look up">
+            <input type="text" id="name" name="name" placeholder="Name to look up">
             {% endif %}
         </div>
         <input class="btn btn-primary" name="searchBtn" type="submit" value="Look Up">

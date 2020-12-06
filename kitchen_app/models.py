@@ -60,7 +60,7 @@ class Tasks (models.Model):
     task = models.CharField(max_length=200)
     status = models.BooleanField(default=False)
     type = models.CharField(max_length=50, null=True, blank=True)
-    deadline = models.CharField(max_length=10, null=True, blank=True, unique=True)
+    deadline = models.CharField(max_length=10, null=True, blank=True)
 
     @classmethod
     def create(cls, user, room, text, type, deadline):

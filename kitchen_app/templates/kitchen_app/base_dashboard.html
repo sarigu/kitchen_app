@@ -32,7 +32,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'kitchen_app:profile' %}">
+                            <a class="nav-link" href="{% url 'kitchen_app:profile' room.pk %}">
                                 Profile
                             </a>
                         </li>
@@ -56,6 +56,13 @@
                                 Cleaning Schedule
                             </a>
                         </li>
+                        {% if roomMembers %}
+                        {% for member in roomMembers %}
+                        {% if member.user.pk == user.pk and member.status == "admin" %}
+                        <button class="btn btn-primary">edit mode</button>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
                     </ul>
                 </div>
             </nav>

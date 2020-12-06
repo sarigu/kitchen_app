@@ -25,6 +25,7 @@
                     <h2>End</h2>
                     {{ week.weekEnd }}
                 </div>
+                {% if takenWeeks %}
                 {% for takenWeek in takenWeeks %}
                 {% if takenWeek.deadline == week.week %}
                 <div class="p-2 taken">
@@ -33,6 +34,7 @@
                 </div>
                 {% endif %}
                 {% endfor %}
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
