@@ -129,7 +129,11 @@
                         </div>
                         <button class="btn btn-light"
                             onClick="document.getElementById('comment-section + {{ post.pk }}').style.display = 'block';">Comment</button>
-                        <button class="btn btn-light">Like</button>
+                        <form action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="postID" value="{{ post.pk }}">
+                            <button class="btn btn-light" name="likeBtn">Like</button>
+                        </form>
                     </div>
 
                 </div>

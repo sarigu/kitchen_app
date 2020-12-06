@@ -144,6 +144,15 @@ class Likes (models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    @classmethod
+    def create(cls, user, room, type, content_type, object_id):
+        like = cls()
+        like.user = user
+        like.room = room
+        like.type = type
+        like.content_type = content_type
+        like.object_id = object_id
+        like.save()
 
     def __str__(self):
         return f"{self.user} - {self.room} - {self.type} - {self.content_type} - {self.object_id} - {self.content_object}"
