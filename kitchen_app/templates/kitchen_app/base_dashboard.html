@@ -56,8 +56,8 @@
                                 Cleaning Schedule
                             </a>
                         </li>
-                        {% if roomMembers %}
-                        {% for member in roomMembers %}
+                        {% if members %}
+                        {% for member in members %}
                         {% if member.user.pk == user.pk and member.status == "admin" %}
                         <button class="btn btn-primary">edit mode</button>
                         {% endif %}

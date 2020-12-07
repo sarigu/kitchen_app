@@ -7,8 +7,6 @@ from isoweek import Week
 from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 
-
-# Create your views here.
 @login_required
 def index(request):
     rooms = []
@@ -46,7 +44,7 @@ def create_room(request):
 @login_required
 def enter_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    roomMembers = RoomMembers.objects.filter(room=room_id)
+    members = RoomMembers.objects.filter(room=room_id)
     unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
     assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user)
     events = Events.objects.filter(room=room_id)
@@ -98,7 +96,6 @@ def enter_room(request, room_id):
             content_type = ContentType.objects.get_for_model(Comments)
             Likes.create(request.user, room, "comment", content_type, commentID)
       
-
     postLikes = []
     commentLikes = []
 
@@ -126,8 +123,7 @@ def enter_room(request, room_id):
         'comments': comments,
         'postLikes': postLikes,
         'commentLikes': commentLikes,
-        'roomMembers': roomMembers,
-      
+        'members': members, 
     }
  
     return render(request, 'kitchen_app/dashboard.html', context)
@@ -136,6 +132,7 @@ def enter_room(request, room_id):
 def members(request, room_id):
     members = RoomMembers.objects.filter(room=room_id)
     room = get_object_or_404(Room, pk=room_id)
+
     context = {
         'user': request.user,   
         'members': members,
@@ -167,16 +164,17 @@ def members(request, room_id):
     
     members = RoomMembers.objects.filter(room=room_id)
     context['members'] = members
-     
 
     return render(request, 'kitchen_app/members.html', context)
 
 @login_required
 def profile(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
+    members = RoomMembers.objects.filter(room=room_id)
     context = { 
         'user': request.user,
         'room': room,
+        'members': members,
     }
     return render(request, 'kitchen_app/profile.html', context)
 
@@ -184,11 +182,13 @@ def profile(request, room_id):
 def kitchen_fund(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
+    members = RoomMembers.objects.filter(room=room_id)
     
     context = {
         'user': request.user,   
         'room': room,
         'tasks': tasks,
+        'members': members,
     }
 
     if request.method == 'POST' and 'addBtn' in request.POST:
@@ -220,8 +220,6 @@ def schedule(request, room_id):
     room = get_object_or_404(Room, pk=room_id)  
     members = RoomMembers.objects.filter(room=room_id) 
     takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
-    print(takenWeeks)
-
     weeks = []
     i = 1
     while i <= 52:

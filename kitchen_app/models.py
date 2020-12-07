@@ -23,6 +23,13 @@ type_of_like = (
     ('comment', 'Comment'),
 )
 
+class UserProfile(models.Model):
+   user = models.OneToOneField(User, on_delete=models.CASCADE)
+   phone = models.CharField(max_length=25, blank=True)
+
+   def __str__(self):
+      return f"{self.user} - {self.user.email} -  {self.user.first_name} -  {self.user.last_name} - {self.phone}"
+
 
 class Room (models.Model):
     name = models.CharField(max_length=100)
@@ -76,18 +83,7 @@ class Tasks (models.Model):
         self.status = not self.status
         self.save()
 
-    def deleteTask(sender, instance, **kwargs):
-        queryset = Subtasks.objects.filter(task=instance.task.pk)
-        subtasks = []
-        doneTasks = []
-        for subtask in queryset: 
-            subtasks.append(subtask)
-            if(subtask.status == True):
-                doneTasks.append(subtask)
-
-        if(len(doneTasks) == len(subtasks)):
-            instance.task.status = True
-            instance.task.save()
+    
 
     def setUser(self, user):
         self.user = user
@@ -110,7 +106,7 @@ class Subtasks (models.Model):
         return f"{self.task} - {self.pk} - {self.taskDescription} - {self.status}"
 
 
-post_save.connect(Tasks.deleteTask, sender=Subtasks)
+#post_save.connect(Tasks.deleteTask, sender=Subtasks)
 
 class Events (models.Model):
     title = models.CharField(max_length=100)

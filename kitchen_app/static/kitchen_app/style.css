@@ -12,3 +12,11 @@ body{
     width:350px;
     padding:20px;
 }
+
+/* Weekly Cleaning Schedule */
+
+#week-overview{
+    height:400px;
+    margin-bottom:25px;
+    overflow: scroll;
+}
