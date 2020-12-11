@@ -106,6 +106,7 @@
                         {% endif %}
                         {% endfor %}
                         {% endif %}
+
                         <div id="comment-section + {{ post.pk }}" style="display: none">
                             <form action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
                                 {% csrf_token %}
@@ -123,6 +124,9 @@
                             {% csrf_token %}
                             <input type="hidden" name="postID" value="{{ post.pk }}">
                             <button class="btn btn-light" name="likeBtn">Like</button>
+                            {% if post.user == user %}
+                            <button class="btn btn-danger" name="removePostBtn">Remove</button>
+                            {% endif %}
                         </form>
                         {% if comments %}
                         {% for comment in comments %}

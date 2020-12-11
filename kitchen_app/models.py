@@ -133,6 +133,7 @@ class Events (models.Model):
 class Likes (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    active = models.BooleanField(default=False)
     type = models.CharField(max_length=10, choices=type_of_like)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -144,12 +145,17 @@ class Likes (models.Model):
         like.user = user
         like.room = room
         like.type = type
+        like.active = True
         like.content_type = content_type
         like.object_id = object_id
         like.save()
 
+    def toggle_active(self):
+        self.active = not self.active
+        self.save()
+
     def __str__(self):
-        return f"{self.user} - {self.room} - {self.type} - {self.content_type} - {self.object_id} - {self.content_object}"
+        return f"{self.user} - {self.room}  - {self.type}  - {self.active} - {self.object_id} - {self.content_object}"
 
 class Posts (models.Model):
     text = models.CharField(max_length=500)
