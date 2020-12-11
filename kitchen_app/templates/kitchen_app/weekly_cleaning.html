@@ -14,10 +14,18 @@
         {% if task.status == False %}
         <input type="submit" value="Done" name="doneBtn" class="btn btn-success">
         {% else %}
-        <input type="submit" value="not done" name="doneBtn" class="btn btn-light">
+        <input type="submit" disabled value="Done" name="doneBtn" class="btn btn-light">
         {% endif %}
     </form>
     {% endfor %}
     {% endif %}
 </div>
+{% if messages %}
+{% for message in messages %}
+{% if message.tags %}
+<script>alert("{{ message }}")</script> {% endif %}
+
+{% endfor %}
+
+{% endif %}
 {% endblock %}

@@ -13,13 +13,8 @@ def create_user_profile(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Subtasks, dispatch_uid="mark_task_as_done")
 def mark_task_as_done(sender, instance, **kwargs):
-      queryset = Subtasks.objects.filter(task=instance.task.pk)
-      subtasks = []
-      doneTasks = []
-      for subtask in queryset: 
-         subtasks.append(subtask)
-         if(subtask.status == True):
-            doneTasks.append(subtask)
-
-      if(len(doneTasks) == len(subtasks)):
-         instance.task.delete()
+   if Subtasks.objects.filter(task=instance.task.pk).count() == Subtasks.objects.filter(status=True).count():
+      instance.task.status = True
+      instance.task.save()
+      
+         

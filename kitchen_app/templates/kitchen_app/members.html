@@ -11,14 +11,21 @@
         <input type="hidden" name="memberID" value="{{ member.user.pk }}">
         <h3>{{ member.user }}</h3>
         <span class="badge badge-light">{{ member.status }}</span>
+
+        <br>
         <br>
         {% if member.status == "member"  %}
         <input type="submit" name="updateBtn" class="btn btn-primary" value="make admin">
         <input type="submit" name="removeBtn" class="btn btn-danger" value="remove">
+
         {% endif %}
     </form>
+    <a class="nav-link active" href="{% url 'chat:index'%}" target="_blank">
+        Chat with {{ member.user }}
+    </a>
     {% endfor %}
 </ul>
+
 
 <hr>
 <h3>Find new members</h3>

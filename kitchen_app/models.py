@@ -83,8 +83,6 @@ class Tasks (models.Model):
         self.status = not self.status
         self.save()
 
-    
-
     def setUser(self, user):
         self.user = user
         self.save()

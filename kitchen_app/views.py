@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes
+from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile
 from datetime import date
 from isoweek import Week
 from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 @login_required
 def index(request):
@@ -46,7 +48,7 @@ def enter_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
     unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
-    assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user)
+    assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(status=False)
     events = Events.objects.filter(room=room_id)
     posts = Posts.objects.filter(room=room_id)
     comments = Comments.objects.filter(room=room_id)
@@ -165,14 +167,17 @@ def members(request, room_id):
     members = RoomMembers.objects.filter(room=room_id)
     context['members'] = members
 
+
     return render(request, 'kitchen_app/members.html', context)
 
 @login_required
 def profile(request, room_id):
+    userDetails = get_object_or_404(UserProfile, user=request.user)
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
     context = { 
         'user': request.user,
+        'user_details': userDetails,
         'room': room,
         'members': members,
     }
@@ -202,17 +207,24 @@ def weekly_cleaning(request, room_id):
     queryset = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(type="clean")
     for elem in queryset:
         task = get_object_or_404(Tasks, pk=elem.pk)
+    
     subtasks = Subtasks.objects.filter(task=task.pk)
+
     context={  
         'user': request.user,   
         'room': room,
         'subtasks': subtasks
+        
     }
 
     if request.method == 'POST':
-        taskID = request.POST['taskID']
-        task = get_object_or_404(Subtasks, pk=taskID)
-        task.toggle_status()
+        subtaskID = request.POST['taskID']
+        subtask = get_object_or_404(Subtasks, pk=subtaskID)
+        subtask.toggle_status()
+        if Subtasks.objects.filter(task=task.pk).count() == Subtasks.objects.filter(status=True).count():
+            messages.success(request, 'Your done')
+ 
+
     return render(request, 'kitchen_app/weekly_cleaning.html', context)
 
 @login_required
