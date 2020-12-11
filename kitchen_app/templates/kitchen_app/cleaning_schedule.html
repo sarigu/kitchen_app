@@ -32,6 +32,11 @@
                     <h2>User</h2>
                     {{ takenWeek.user }}
                 </div>
+                <form action="{% url 'kitchen_app:schedule' room.pk %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="takenWeekID" value="{{ takenWeek.pk }}">
+                    <button class="btn btn-danger" name="removeBtn">Remove</button>
+                </form>
                 {% endif %}
                 {% endfor %}
                 {% endif %}

@@ -104,8 +104,6 @@ class Subtasks (models.Model):
         return f"{self.task} - {self.pk} - {self.taskDescription} - {self.status}"
 
 
-#post_save.connect(Tasks.deleteTask, sender=Subtasks)
-
 class Events (models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=200)

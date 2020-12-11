@@ -298,7 +298,7 @@ def schedule(request, room_id):
 
     taken = False
   
-    if request.method == 'POST':
+    if request.method == 'POST' and 'addBtn' in request.POST:
         try: 
             dueToWeek = Week.fromstring(request.POST['week'])
             if takenWeeks: 
@@ -315,6 +315,11 @@ def schedule(request, room_id):
                 context['takenWeeks'] = takenWeeks
         except IntegrityError as e:
             context['error'] = "Week is taken"
+
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        takenWeekID = request.POST['takenWeekID']
+        task =  get_object_or_404(Tasks, pk=takenWeekID)
+        task.delete()
                         
     return render(request, 'kitchen_app/cleaning_schedule.html', context)
 
