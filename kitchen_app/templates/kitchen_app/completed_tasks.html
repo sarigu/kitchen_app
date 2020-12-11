@@ -1,0 +1,19 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Completed Tasks{% endblock %}
+
+{% block content %}
+<h1>Completed Tasks</h1>
+{% if completedTasks %}
+{% for task in completedTasks %}
+<form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="taskID" value="{{ task.pk }}">
+    <div>{{ task.task }} </div>
+    <button name="removeBtn" class="btn btn-danger">Got it, remove</button>
+</form>
+{% endfor %}
+{% else %}
+<div>No completed tasks</div>
+{% endif %}
+{% endblock %}

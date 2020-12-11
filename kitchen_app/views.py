@@ -305,3 +305,20 @@ def event(request, room_id, event_id):
         'event': event,
     }
     return render(request, 'kitchen_app/event_details.html', context)
+
+@login_required
+def completed_task(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+
+    if request.method == 'POST':
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.delete()
+
+    completedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(status=True)
+    
+    context={  
+        'room': room,   
+        'completedTasks': completedTasks, 
+    }
+    return render(request, 'kitchen_app/completed_tasks.html', context)
