@@ -1,0 +1,26 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h1>Profile</h1>
+<form action="{% url 'kitchen_app:edit_profile' room.pk %}" method="POST">
+    {% csrf_token %}
+    <label for="username">Username</label>
+    <input name="username" value="{{ user_details.user.username }}">
+    <br>
+    <label for="email">Email</label>
+    <input name="email" value="{{ user_details.user.email }}">
+    <br>
+    <label for="first_name">First Name</label>
+    <input name="first_name" value="{{ user_details.user.first_name }}">
+    <br>
+    <label for="last_name">Last Name</label>
+    <input name="last_name" value="{{ user_details.user.last_name }}">
+    <br>
+    <label for="phone">Phone</label>
+    <input name="phone" value="{{ user_details.phone }}">
+    <br>
+    <button type="submit" class="btn btn-lg btn-primary">Update</button>
+</form>
+{% endblock %}

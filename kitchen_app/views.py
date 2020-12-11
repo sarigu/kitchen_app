@@ -175,14 +175,38 @@ def members(request, room_id):
 def profile(request, room_id):
     userDetails = get_object_or_404(UserProfile, user=request.user)
     room = get_object_or_404(Room, pk=room_id)
-    members = RoomMembers.objects.filter(room=room_id)
     context = { 
         'user': request.user,
         'user_details': userDetails,
         'room': room,
-        'members': members,
     }
     return render(request, 'kitchen_app/profile.html', context)
+
+@login_required
+def edit_profile(request, room_id):
+    user = get_object_or_404(User, pk=request.user.pk)
+    userDetails = get_object_or_404(UserProfile, user=request.user)
+    room = get_object_or_404(Room, pk=room_id)
+
+    context = { 
+        'user': request.user,
+        'user_details': userDetails,
+        'room': room,
+    }
+
+
+    if request.method == 'POST':
+        user.username = request.POST['username']
+        user.email = request.POST['email']
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.save()
+        if request.POST['phone']: 
+            userDetails.phone = request.POST['phone']
+            userDetails.save()
+        return render(request, 'kitchen_app/profile.html', context)
+   
+    return render(request, 'kitchen_app/edit-profile.html', context)
 
 @login_required
 def kitchen_fund(request, room_id):

@@ -16,5 +16,5 @@
     <li class="list-group-item"> Phone: {{ user_details.phone}}
     </li>
 </ul>
-<button class="btn btn-lg btn-primary">Edit profile</button>
+<a href="{% url 'kitchen_app:edit_profile' room.pk %}" class="btn btn-lg btn-primary">Edit profile</a>
 {% endblock %}
