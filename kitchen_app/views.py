@@ -65,7 +65,8 @@ def enter_room(request, room_id):
     if request.method == 'POST' and 'doneBtn' in request.POST:
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
-        task.delete()
+        task.status = True
+        task.save()
 
     if request.method == 'POST' and 'removeBtn' in request.POST:
         taskID = request.POST['taskID']
