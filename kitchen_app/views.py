@@ -101,6 +101,13 @@ def enter_room(request, room_id):
         post = get_object_or_404(Posts, pk=postID)
         if post.user == request.user:
             post.delete()
+
+    if request.method == 'POST' and 'removeCommentBtn' in request.POST:
+        commentID = request.POST['commentID']
+        comment = get_object_or_404(Comments, pk=commentID)
+        if comment.user == request.user:
+            comment.delete()
+    
     
     if request.method == 'POST' and 'commentLikeBtn' in request.POST:
         commentID = request.POST['commentID']
@@ -109,6 +116,11 @@ def enter_room(request, room_id):
         if likes.filter(user=request.user).exists() == False:
             content_type = ContentType.objects.get_for_model(Comments)
             Likes.create(request.user, room, "comment", content_type, commentID)
+        else: 
+            likes = Likes.objects.filter(user=request.user).filter(object_id=commentID)
+            for like in likes:
+                like.toggle_active()
+               
       
     postLikes = []
     commentLikes = []
@@ -116,14 +128,13 @@ def enter_room(request, room_id):
     for elem in posts:
         post = get_object_or_404(Posts, pk=elem.pk)
         likes = post.likes.all().filter(active=True)
-        print(likes)
         postLike = {'numberOfLikes' : len(likes), 'post': post }
         postLikes.append(postLike)
     
 
     for elem in comments:
         comment = get_object_or_404(Comments, pk=elem.pk)
-        likes = comment.likes.all()
+        likes = comment.likes.all().filter(active=True)
         commentLike = {'numberOfLikes' : len(likes), 'comment': comment }
         commentLikes.append(commentLike)
 

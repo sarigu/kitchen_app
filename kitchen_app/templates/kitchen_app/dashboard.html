@@ -146,6 +146,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="commentID" value="{{ comment.pk }}">
                                 <button class="btn btn-light" name="commentLikeBtn">Like</button>
+                                <button class="btn btn-danger" name="removeCommentBtn">Remove</button>
                             </form>
                         </div>
                         {% endif %}
