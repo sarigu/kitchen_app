@@ -1,8 +1,9 @@
-{% extends 'kitchen_app/base_dashboard.html' %}
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
 
-{% block title %}Cleaning Schedule{% endblock %}
+{% block title %}Cleaning Schedule {% endblock %}
 
 {% block content %}
+
 <div>
     <h1>Cleaning Schedule</h1>
     <hr>
@@ -32,7 +33,11 @@
                     <h2>User</h2>
                     {{ takenWeek.user }}
                 </div>
-
+                <form action="{% url 'kitchen_app:admin_schedule' room.pk %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="takenWeekID" value="{{ takenWeek.pk }}">
+                    <button class="btn btn-danger" name="removeBtn">Remove</button>
+                </form>
                 {% endif %}
                 {% endfor %}
                 {% endif %}
@@ -43,7 +48,19 @@
         {% endif %}
 
     </div>
-
+    <div>
+        <h2>Create Weekly Schedule</h2>
+        <form action="{% url 'kitchen_app:admin_schedule' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input required type="week" id="week" name="week">
+            <select name="members_choice" id="members_choice">
+                {% for member in members %}
+                <option value="{{ member.user.username }}">{{ member.user.username }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="add" name="addBtn" class="btn btn-primary">
+        </form>
+    </div>
 
 </div>
 {% endblock %}

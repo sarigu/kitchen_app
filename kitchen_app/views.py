@@ -271,32 +271,7 @@ def schedule(request, room_id):
         'weeks': weeks,
         'takenWeeks': takenWeeks
     }
-
-    taken = False
-  
-    if request.method == 'POST' and 'addBtn' in request.POST:
-        try: 
-            dueToWeek = Week.fromstring(request.POST['week'])
-            if takenWeeks: 
-                for takenWeek in takenWeeks:
-                    if dueToWeek.isoformat() == takenWeek.deadline:
-                        context['error'] = "Week is taken"
-                        taken = True
-               
-            if taken == False:
-                assignedUser = request.POST['members_choice']
-                user = get_object_or_404(User, username=assignedUser)  
-                Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
-                return HttpResponseRedirect(reverse('kitchen_app:schedule', args=(room.id,)))
-        except IntegrityError as e:
-            context['error'] = "Week is taken"
-
-    if request.method == 'POST' and 'removeBtn' in request.POST:
-        takenWeekID = request.POST['takenWeekID']
-        task =  get_object_or_404(Tasks, pk=takenWeekID)
-        task.delete()
-        return HttpResponseRedirect(reverse('kitchen_app:schedule', args=(room.id,)))
-                        
+          
     return render(request, 'kitchen_app/cleaning_schedule.html', context)
 
 
@@ -538,3 +513,51 @@ def admin_members(request, room_id):
     
 
     return render(request, 'kitchen_app/admin_members.html', context)
+
+def admin_schedule(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)  
+    members = RoomMembers.objects.filter(room=room_id) 
+    takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
+    weeks = []
+    i = 1
+    while i <= 52:
+        w = Week(2020, i)
+        week = {'week': w.isoformat(), 'weekStart': w.monday().isoformat(), 'weekEnd': w.sunday().isoformat(), 'deadline': None, 'user': None  }
+        weeks.append(week)
+        i += 1
+
+    context={  
+        'user': request.user,   
+        'room': room,
+        'members': members,
+        'weeks': weeks,
+        'takenWeeks': takenWeeks
+    }
+
+    taken = False
+  
+    if request.method == 'POST' and 'addBtn' in request.POST:
+        try: 
+            dueToWeek = Week.fromstring(request.POST['week'])
+            if takenWeeks: 
+                for takenWeek in takenWeeks:
+                    if dueToWeek.isoformat() == takenWeek.deadline:
+                        context['error'] = "Week is taken"
+                        taken = True
+               
+            if taken == False:
+                assignedUser = request.POST['members_choice']
+                user = get_object_or_404(User, username=assignedUser)  
+                Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
+                return HttpResponseRedirect(reverse('kitchen_app:admin_schedule', args=(room.id,)))
+        except IntegrityError as e:
+            context['error'] = "Week is taken"
+
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        takenWeekID = request.POST['takenWeekID']
+        task =  get_object_or_404(Tasks, pk=takenWeekID)
+        task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_schedule', args=(room.id,)))
+                        
+    return render(request, 'kitchen_app/admin_cleaning_schedule.html', context)

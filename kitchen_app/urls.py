@@ -23,4 +23,5 @@ urlpatterns = [
    path('delete_event/<int:room_id>/', views.delete_event, name='delete_event'),  
    path('admin_completed_tasks/<int:room_id>/', views.admin_completed_tasks, name='admin_completed_tasks'), 
    path('admin_members/<int:room_id>/', views.admin_members, name='admin_members'),  
+   path('admin_schedule/<int:room_id>/', views.admin_schedule, name='admin_schedule'),  
 ]
