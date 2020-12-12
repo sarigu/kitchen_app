@@ -30,18 +30,8 @@ def create_room(request):
             newRoom = form.save()
             if(newRoom):
                 RoomMembers.create(request.user, newRoom, "admin")
-             
-    rooms = []
-    queryset = RoomMembers.objects.filter(user=request.user).values_list('room', flat=True)
-    for room in queryset:
-        room = get_object_or_404(Room, pk=room)
-        rooms.append(room)
-        
-    context={
-        'rooms': rooms,
-        'user': request.user,    
-    }
-    return render(request, 'kitchen_app/index.html', context)
+                
+    return HttpResponseRedirect(reverse('kitchen_app:index'))
 
 
 def enter_room(request, room_id):
@@ -57,31 +47,37 @@ def enter_room(request, room_id):
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.setUser(request.user)
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
     if request.method == 'POST' and 'addTaskBtn' in request.POST:
         newTask = request.POST['task']
         Tasks.create(None, room, newTask, "anything", None)
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
     if request.method == 'POST' and 'doneBtn' in request.POST:
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.status = True
         task.save()
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
     if request.method == 'POST' and 'removeBtn' in request.POST:
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
     if request.method == 'POST' and 'addPostBtn' in request.POST:
         postText = request.POST['post']
         Posts.create(postText, request.user, room)
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
     if request.method == 'POST' and 'commentBtn' in request.POST:
         text = request.POST['comment']
         postID = request.POST['postID']
         parentPost = get_object_or_404(Posts, pk=postID)
         Comments.create(text, request.user, parentPost, room )
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
     if request.method == 'POST' and 'likeBtn' in request.POST:
         postID = request.POST['postID']
@@ -94,6 +90,7 @@ def enter_room(request, room_id):
             likes = Likes.objects.filter(user=request.user).filter(object_id=postID)
             for like in likes:
                 like.toggle_active()
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
                
 
     if request.method == 'POST' and 'removePostBtn' in request.POST:
@@ -101,12 +98,14 @@ def enter_room(request, room_id):
         post = get_object_or_404(Posts, pk=postID)
         if post.user == request.user:
             post.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
     if request.method == 'POST' and 'removeCommentBtn' in request.POST:
         commentID = request.POST['commentID']
         comment = get_object_or_404(Comments, pk=commentID)
         if comment.user == request.user:
             comment.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
     
     
     if request.method == 'POST' and 'commentLikeBtn' in request.POST:
@@ -120,6 +119,7 @@ def enter_room(request, room_id):
             likes = Likes.objects.filter(user=request.user).filter(object_id=commentID)
             for like in likes:
                 like.toggle_active()
+        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
                
       
     postLikes = []
@@ -169,6 +169,7 @@ def members(request, room_id):
         member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=memberID)
         member.status = "admin"
         member.save()
+        return HttpResponseRedirect(reverse('kitchen_app:members', args=(room.id,)))
     if request.method == 'POST' and 'searchBtn' in request.POST:
         name = request.POST['name']
         members = RoomMembers.objects.filter(room=room_id).values_list('user', flat=True)
@@ -181,11 +182,13 @@ def members(request, room_id):
         userID = request.POST['userID']
         user = get_object_or_404(User, pk=userID)
         RoomMembers.create(user, room, "member")
+        return HttpResponseRedirect(reverse('kitchen_app:members', args=(room.id,)))
 
     if request.method == 'POST' and 'removeBtn' in request.POST:
         memberID = request.POST['memberID']
         member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=memberID)
         member.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:members', args=(room.id,)))
     
     members = RoomMembers.objects.filter(room=room_id)
     context['members'] = members
@@ -226,7 +229,8 @@ def edit_profile(request, room_id):
         if request.POST['phone']: 
             userDetails.phone = request.POST['phone']
             userDetails.save()
-        return render(request, 'kitchen_app/profile.html', context)
+            
+        return HttpResponseRedirect(reverse('kitchen_app:profile', args=(room.id,)))
    
     return render(request, 'kitchen_app/edit-profile.html', context)
 
@@ -246,6 +250,8 @@ def kitchen_fund(request, room_id):
     if request.method == 'POST' and 'addBtn' in request.POST:
         newTask = request.POST['task']
         Tasks.create(None, room, newTask, "kitchen", None)
+        return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
+
     return render(request, 'kitchen_app/kitchen_fund.html', context)
 
 
@@ -268,9 +274,9 @@ def weekly_cleaning(request, room_id):
         subtaskID = request.POST['taskID']
         subtask = get_object_or_404(Subtasks, pk=subtaskID)
         subtask.toggle_status()
-        if Subtasks.objects.filter(task=task.pk).count() == Subtasks.objects.filter(status=True).count():
+        if Subtasks.objects.filter(task=task.pk).count() == Subtasks.objects.filter(task=task.pk).filter(status=True).count():
             messages.success(request, 'Your done')
- 
+        return HttpResponseRedirect(reverse('kitchen_app:weekly_cleaning', args=(room.id,)))
 
     return render(request, 'kitchen_app/weekly_cleaning.html', context)
 
@@ -311,7 +317,7 @@ def schedule(request, room_id):
                 user = get_object_or_404(User, username=assignedUser)  
                 Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
                 takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
-                context['takenWeeks'] = takenWeeks
+                return HttpResponseRedirect(reverse('kitchen_app:schedule', args=(room.id,)))
         except IntegrityError as e:
             context['error'] = "Week is taken"
 
@@ -319,6 +325,7 @@ def schedule(request, room_id):
         takenWeekID = request.POST['takenWeekID']
         task =  get_object_or_404(Tasks, pk=takenWeekID)
         task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:schedule', args=(room.id,)))
                         
     return render(request, 'kitchen_app/cleaning_schedule.html', context)
 
@@ -344,6 +351,7 @@ def create_event(request, room_id):
         type = request.POST['type']
 
         Events.create(title, description, room, type, startDate, endDate)
+        return HttpResponseRedirect(reverse('kitchen_app:create_event', args=(room.id,)))
 
     return render(request, 'kitchen_app/dashboard.html', context)
 
@@ -366,6 +374,7 @@ def completed_task(request, room_id):
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:completed_task', args=(room.id,)))
 
     completedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(status=True)
     
