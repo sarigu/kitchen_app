@@ -191,9 +191,6 @@ def members(request, room_id):
         member.delete()
         return HttpResponseRedirect(reverse('kitchen_app:members', args=(room.id,)))
     
-    members = RoomMembers.objects.filter(room=room_id)
-    context['members'] = members
-
 
     return render(request, 'kitchen_app/members.html', context)
 
@@ -520,3 +517,51 @@ def admin_completed_tasks(request, room_id):
         'completedTasks': completedTasks, 
     }
     return render(request, 'kitchen_app/admin_completed_tasks.html', context)
+
+def admin_members(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    members = RoomMembers.objects.filter(room=room_id)
+    room = get_object_or_404(Room, pk=room_id)
+
+    context = {
+        'user': request.user,   
+        'members': members,
+        'room': room
+    }
+
+    if request.method == 'POST' and 'updateBtn' in request.POST:
+        memberID = request.POST['memberID']
+        member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=memberID)
+        member.status = "admin"
+        member.save()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_members', args=(room.id,)))
+
+    if request.method == 'POST' and 'makeMemberBtn' in request.POST:
+        memberID = request.POST['memberID']
+        member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=memberID)
+        member.status = "member"
+        member.save()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_members', args=(room.id,)))
+
+    if request.method == 'POST' and 'searchBtn' in request.POST:
+        name = request.POST['name']
+        members = RoomMembers.objects.filter(room=room_id).values_list('user', flat=True)
+        users = User.objects.filter(username__icontains=name).exclude(id__in = members)
+
+        context['search_term'] = name
+        context['users'] = users
+
+    if request.method == 'POST' and 'addBtn' in request.POST:
+        userID = request.POST['userID']
+        user = get_object_or_404(User, pk=userID)
+        RoomMembers.create(user, room, "member")
+        return HttpResponseRedirect(reverse('kitchen_app:admin_members', args=(room.id,)))
+
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        memberID = request.POST['memberID']
+        member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=memberID)
+        member.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_members', args=(room.id,)))
+    
+
+    return render(request, 'kitchen_app/admin_members.html', context)
