@@ -1,24 +1,24 @@
-{% extends 'kitchen_app/base_dashboard.html' %}
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Edit View Dashboard{% endblock %}
 
 {% block content %}
 <div>
-    <h1>Hi you entered the dashboard {{ room.name }}</h1>
+    <h1>Hi you entered the dashboard {{ room.name }} in edit mode</h1>
     <hr>
     <div>
-        <h2>Your tasks</h2>
+        <h2>Assigned Tasks</h2>
         {% if assignedTasks %}
         {% for task in assignedTasks %}
-        <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+        <form class="list-group-item" action="{% url 'kitchen_app:admin_view' room.pk %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="taskID" value="{{ task.pk }}">
             <div>{{ task.task }} </div>
-            {% if task.type == "clean" %}
-            <a href="{% url 'kitchen_app:weekly_cleaning' room.pk %}">Cleaning link</a>
-            {% else %}
-            <input type="submit" value="Done" name="doneBtn" class="btn btn-success">
+            <div> Assigned to {{ task.user }} </div>
+            {% if task.deadline %}
+            <div> Deadline {{ task.deadline }} </div>
             {% endif %}
+            <input type="submit" value="Remove" name="removeBtn" class="btn btn-danger">
         </form>
         {% endfor %}
         {% else %}
@@ -26,7 +26,7 @@
         {% endif %}
     </div>
     <hr>
-    <a href="{% url 'kitchen_app:completed_task' room.pk %}">See your completed tasks</a>
+    <a href="{% url 'kitchen_app:completed_task' room.pk %}">See completed tasks</a>
     <hr>
     <div>
         <h2>Upcoming events</h2>
@@ -50,6 +50,12 @@
                             class="btn btn-lg btn-block btn-outline-primary">
                             See event
                         </a>
+                        <form class="list-group-item" action="{% url 'kitchen_app:delete_event' room.pk %}"
+                            method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="eventID" value="{{ event.pk }}">
+                            <input type="submit" value="Delete event" name="deleteBtn" class="btn btn-danger">
+                        </form>
                     </div>
                 </div>
             </div>
@@ -70,11 +76,16 @@
         <h2>Tasks to take</h2>
         {% if unassignedTasks %}
         {% for task in unassignedTasks %}
-        <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+        <form class="list-group-item" action="{% url 'kitchen_app:admin_view' room.pk %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="taskID" value="{{ task.pk }}">
             <div>{{ task.task }}</div>
-            <button name="takeTaskBtn" class="btn btn-primary">Take task</button>
+            <select name="members_choice" id="members_choice">
+                {% for member in members %}
+                <option value="{{ member.user.username }}">{{ member.user.username }}</option>
+                {% endfor %}
+            </select>
+            <button name="assignTaskBtn" class="btn btn-primary">Assign task</button>
             <button name="removeBtn" class="btn btn-danger">Remove</button>
         </form>
         {% endfor %}
@@ -124,9 +135,9 @@
                             {% csrf_token %}
                             <input type="hidden" name="postID" value="{{ post.pk }}">
                             <button class="btn btn-light btn-sm" name="likeBtn">Like</button>
-                            {% if post.user == user %}
+
                             <button class="btn btn-danger btn-sm" name="removePostBtn">Remove</button>
-                            {% endif %}
+
                         </form>
                         {% if comments %}
                         {% for comment in comments %}
@@ -146,10 +157,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="commentID" value="{{ comment.pk }}">
                                 <button class="btn btn-light btn-sm" name="commentLikeBtn">Like</button>
-                                {% if comment.user == user %}
                                 <button class="btn btn-danger btn-sm" name="removeCommentBtn">Remove</button>
-                                {% endif %}
-
                             </form>
                         </div>
                         {% endif %}

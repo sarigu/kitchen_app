@@ -8,6 +8,7 @@ from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from .utils import is_room_admin
 
 
 def index(request):
@@ -316,7 +317,6 @@ def schedule(request, room_id):
                 assignedUser = request.POST['members_choice']
                 user = get_object_or_404(User, username=assignedUser)  
                 Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
-                takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
                 return HttpResponseRedirect(reverse('kitchen_app:schedule', args=(room.id,)))
         except IntegrityError as e:
             context['error'] = "Week is taken"
@@ -383,3 +383,130 @@ def completed_task(request, room_id):
         'completedTasks': completedTasks, 
     }
     return render(request, 'kitchen_app/completed_tasks.html', context)
+
+#####  admin edit mode
+
+def admin_view(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    members = RoomMembers.objects.filter(room=room_id)
+    unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
+    assignedTasks = Tasks.objects.filter(room=room_id).filter(status=False).exclude(user__isnull=True)
+    events = Events.objects.filter(room=room_id)
+    posts = Posts.objects.filter(room=room_id)
+    comments = Comments.objects.filter(room=room_id)
+   
+    if request.method == 'POST' and 'assignTaskBtn' in request.POST:
+        assignedUser = request.POST['members_choice']
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID) 
+        user = get_object_or_404(User, username=assignedUser) 
+        task.setUser(user) 
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+
+    if request.method == 'POST' and 'addTaskBtn' in request.POST:
+        newTask = request.POST['task']
+        Tasks.create(None, room, newTask, "anything", None)
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+
+    if request.method == 'POST' and 'addPostBtn' in request.POST:
+        postText = request.POST['post']
+        Posts.create(postText, request.user, room)
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+
+    if request.method == 'POST' and 'commentBtn' in request.POST:
+        text = request.POST['comment']
+        postID = request.POST['postID']
+        parentPost = get_object_or_404(Posts, pk=postID)
+        Comments.create(text, request.user, parentPost, room )
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+
+    if request.method == 'POST' and 'likeBtn' in request.POST:
+        postID = request.POST['postID']
+        post = get_object_or_404(Posts, pk=postID)
+        likes = post.likes.all()
+        if likes.filter(user=request.user).exists() == False:
+            content_type = ContentType.objects.get_for_model(Posts)
+            Likes.create(request.user, room, "post", content_type, postID)
+        else: 
+            likes = Likes.objects.filter(user=request.user).filter(object_id=postID)
+            for like in likes:
+                like.toggle_active()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+               
+
+    if request.method == 'POST' and 'removePostBtn' in request.POST:
+        postID = request.POST['postID']
+        post = get_object_or_404(Posts, pk=postID)
+        if post.user == request.user:
+            post.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+
+    if request.method == 'POST' and 'removeCommentBtn' in request.POST:
+        commentID = request.POST['commentID']
+        comment = get_object_or_404(Comments, pk=commentID)
+        if comment.user == request.user:
+            comment.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+    
+    
+    if request.method == 'POST' and 'commentLikeBtn' in request.POST:
+        commentID = request.POST['commentID']
+        comment = get_object_or_404(Comments, pk=commentID)
+        likes = comment.likes.all()
+        if likes.filter(user=request.user).exists() == False:
+            content_type = ContentType.objects.get_for_model(Comments)
+            Likes.create(request.user, room, "comment", content_type, commentID)
+        else: 
+            likes = Likes.objects.filter(user=request.user).filter(object_id=commentID)
+            for like in likes:
+                like.toggle_active()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+               
+      
+    postLikes = []
+    commentLikes = []
+
+    for elem in posts:
+        post = get_object_or_404(Posts, pk=elem.pk)
+        likes = post.likes.all().filter(active=True)
+        postLike = {'numberOfLikes' : len(likes), 'post': post }
+        postLikes.append(postLike)
+    
+
+    for elem in comments:
+        comment = get_object_or_404(Comments, pk=elem.pk)
+        likes = comment.likes.all().filter(active=True)
+        commentLike = {'numberOfLikes' : len(likes), 'comment': comment }
+        commentLikes.append(commentLike)
+
+
+    context = {
+        'room': room,
+        'user': request.user, 
+        'assignedTasks': assignedTasks, 
+        'unassignedTasks': unassignedTasks, 
+        'events': events,
+        'posts': posts,
+        'comments': comments,
+        'postLikes': postLikes,
+        'commentLikes': commentLikes,
+        'members': members, 
+    }
+ 
+    return render(request, 'kitchen_app/admin_dashboard.html', context)
+   
+def delete_event(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    if request.method == 'POST':
+        eventID = request.POST['eventID']
+        event = get_object_or_404(Events, pk=eventID)
+        event.delete()
+    return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))

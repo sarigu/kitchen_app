@@ -27,14 +27,8 @@
                 <div class="sidebar-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'kitchen_app:enter_room' room.pk %}">
+                            <a class="nav-link active" href="{% url 'kitchen_app:admin_view' room.pk %}">
                                 Dashboard
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'kitchen_app:profile' room.pk %}">
-                                Profile
                             </a>
                         </li>
                         <li class="nav-item">
@@ -61,14 +55,10 @@
                                 Cleaning Schedule
                             </a>
                         </li>
-                        {% if members %}
-                        {% for member in members %}
-                        {% if member.user.pk == user.pk and member.status == "admin" %}
-                        <a href="{% url 'kitchen_app:admin_view' room.pk %}" class="btn btn-primary">edit
+
+                        <a href="{% url 'kitchen_app:enter_room' room.pk %}" class="btn btn-primary">view
                             mode</a>
-                        {% endif %}
-                        {% endfor %}
-                        {% endif %}
+
                     </ul>
                 </div>
             </nav>
