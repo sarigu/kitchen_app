@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile
+from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules
 from datetime import date
 from isoweek import Week
 from django.db import IntegrityError
@@ -171,10 +171,12 @@ def members(request, room_id):
 def profile(request, room_id):
     userDetails = get_object_or_404(UserProfile, user=request.user)
     room = get_object_or_404(Room, pk=room_id)
+    members = RoomMembers.objects.filter(room=room_id)
     context = { 
         'user': request.user,
         'user_details': userDetails,
         'room': room,
+        'members': members,
     }
     return render(request, 'kitchen_app/profile.html', context)
 
@@ -183,11 +185,13 @@ def edit_profile(request, room_id):
     user = get_object_or_404(User, pk=request.user.pk)
     userDetails = get_object_or_404(UserProfile, user=request.user)
     room = get_object_or_404(Room, pk=room_id)
+    members = RoomMembers.objects.filter(room=room_id)
 
     context = { 
         'user': request.user,
         'user_details': userDetails,
         'room': room,
+        'members': members,
     }
 
 
@@ -312,8 +316,22 @@ def event(request, room_id, event_id):
     return render(request, 'kitchen_app/event_details.html', context)
 
 
+def rules(request, room_id):
+    members = RoomMembers.objects.filter(room=room_id)
+    room = get_object_or_404(Room, pk=room_id)
+    rules = get_object_or_404(Rules, room=room)
+    context={  
+        'user': request.user,   
+        'room': room,
+        'rules': rules,
+        'members': members,
+    }
+    return render(request, 'kitchen_app/rules.html', context)
+
+
 def completed_task(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
+    members = RoomMembers.objects.filter(room=room_id)
 
     if request.method == 'POST':
         taskID = request.POST['taskID']
@@ -326,6 +344,7 @@ def completed_task(request, room_id):
     context={  
         'room': room,   
         'completedTasks': completedTasks, 
+        'members': members,
     }
     return render(request, 'kitchen_app/completed_tasks.html', context)
 

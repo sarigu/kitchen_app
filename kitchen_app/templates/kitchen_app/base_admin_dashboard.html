@@ -55,6 +55,11 @@
                                 Cleaning Schedule
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'kitchen_app:admin_schedule' room.pk %}">
+                                Cleaning Todo List
+                            </a>
+                        </li>
 
                         <a href="{% url 'kitchen_app:enter_room' room.pk %}" class="btn btn-primary">view
                             mode</a>

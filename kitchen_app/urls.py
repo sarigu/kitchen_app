@@ -17,6 +17,7 @@ urlpatterns = [
    path('schedule/<int:room_id>/', views.schedule, name='schedule'),
    path('create_event/<int:room_id>/', views.create_event, name='create_event'),
    path('event/<int:room_id>/<int:event_id>/', views.event, name='event'),
+   path('rules/<int:room_id>/', views.rules, name='rules'),
    path('completed_task/<int:room_id>/', views.completed_task, name='completed_task'),
    path('edit_profile/<int:room_id>/', views.edit_profile, name='edit_profile'),
    path('admin_view/<int:room_id>/', views.admin_view, name='admin_view'),  

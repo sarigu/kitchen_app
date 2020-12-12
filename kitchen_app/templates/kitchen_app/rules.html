@@ -1,0 +1,11 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Rules{% endblock %}
+
+{% block content %}
+<h1>Rules</h1>
+{% if rules %}
+<div>{{ rules.text }}</div>
+{% endif %}
+
+{% endblock %}

@@ -61,6 +61,18 @@ class RoomMembers (models.Model):
     def __str__(self):
         return f"{self.user} - {self.user.pk} - {self.room} - {self.status} - {self.created_at}"
 
+class Rules (models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    text = models.CharField(max_length=2000, null=True, blank=True)
+    updated = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.room} - {self.created_at} - {self.text} - {self.updated}"
+
+
+
+
 class Tasks (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
