@@ -6,73 +6,13 @@
 <h1>Members</h1>
 <ul class="list-group">
     {% for member in members %}
-    <form class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="memberID" value="{{ member.user.pk }}">
+    <ul class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
         <h3>{{ member.user }}</h3>
         <span class="badge badge-light">{{ member.status }}</span>
-
-        <br>
-        <br>
-        {% if member.status == "member"  %}
-        <input type="submit" name="updateBtn" class="btn btn-primary" value="make admin">
-        <input type="submit" name="removeBtn" class="btn btn-danger" value="remove">
-
-        {% endif %}
-    </form>
+    </ul>
     <a class="nav-link active" href="{% url 'chat:index'%}" target="_blank">
         Chat with {{ member.user }}
     </a>
     {% endfor %}
 </ul>
-
-
-<hr>
-<h3>Find new members</h3>
-
-<form action="{% url 'kitchen_app:members' room.pk %}" method="POST">
-    {% csrf_token %}
-    <fieldset>
-        <div>
-            {% if search_term %}
-            <input type="text" id="name" name="name" value="{{ search_term }}">
-            {% else %}
-            <input type="text" id="name" name="name" placeholder="Name to look up">
-            {% endif %}
-        </div>
-        <input class="btn btn-primary" name="searchBtn" type="submit" value="Look Up">
-    </fieldset>
-</form>
-
-
-{% if users %}
-<ul class="list-group">
-    {% for user in users %}
-    <form class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="userID" value="{{ user.pk }}">
-        <h2>{{ user }}</h2>
-        <p>{{ user.email }}</p>
-        <button name="addBtn" class="btn btn-lg btn-primary">add</button>
-    </form>
-    {% endfor %}
-</ul>
-{% else %}
-<p>no users</p>
-{% endif %}
-
-
-
-
-{% endblock %}
-{% block footer %}
-
-<script>
-
-    window.onload = function () {
-        document.getElementByID("name").focus();
-    }
-
-
-</script>
 {% endblock %}
