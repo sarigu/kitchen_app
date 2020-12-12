@@ -580,3 +580,31 @@ def admin_schedule(request, room_id):
         return HttpResponseRedirect(reverse('kitchen_app:admin_schedule', args=(room.id,)))
                         
     return render(request, 'kitchen_app/admin_cleaning_schedule.html', context)
+
+def admin_rules(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    rules = get_object_or_404(Rules, room=room)
+
+    context = {
+        'room': room,
+        'rules': rules,
+    }
+
+    return render(request, 'kitchen_app/admin_rules.html', context)
+
+def edit_rules(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    rules = get_object_or_404(Rules, room=room)
+    context={   
+        'room': room,
+        'rules': rules,
+    }
+
+    if request.method == 'POST':
+        rules.text = request.POST['text']
+        rules.save()   
+        return HttpResponseRedirect(reverse('kitchen_app:admin_rules', args=(room.id,)))
+   
+    return render(request, 'kitchen_app/edit_rules.html', context)

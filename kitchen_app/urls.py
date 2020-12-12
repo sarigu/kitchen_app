@@ -25,4 +25,6 @@ urlpatterns = [
    path('admin_completed_tasks/<int:room_id>/', views.admin_completed_tasks, name='admin_completed_tasks'), 
    path('admin_members/<int:room_id>/', views.admin_members, name='admin_members'),  
    path('admin_schedule/<int:room_id>/', views.admin_schedule, name='admin_schedule'),  
+   path('admin_rules/<int:room_id>/', views.admin_rules, name='admin_rules'),  
+   path('edit_rules/<int:room_id>/', views.edit_rules, name='edit_rules'),  
 ]

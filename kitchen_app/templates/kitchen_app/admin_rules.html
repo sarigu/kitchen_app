@@ -1,0 +1,12 @@
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
+
+{% block title %}Rules{% endblock %}
+
+{% block content %}
+
+<h1>Rules</h1>
+{% if rules %}
+<div>{{ rules.text }}</div>
+{% endif %}
+<a href="{% url 'kitchen_app:edit_rules' room.pk %}" class="btn btn-lg btn-primary">Edit rules</a>
+{% endblock %}

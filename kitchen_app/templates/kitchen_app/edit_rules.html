@@ -1,0 +1,15 @@
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
+
+{% block title %}Rules{% endblock %}
+
+{% block content %}
+
+<h1>Rules</h1>
+<form action="{% url 'kitchen_app:edit_rules' room.pk %}" method="POST">
+    {% csrf_token %}
+    {% if rules %}
+    <textarea name="text" rows="15" cols="100">{{ rules.text }}</textarea>
+    {% endif %}
+    <button type="submit" class="btn btn-lg btn-primary">Update</button>
+</form>
+{% endblock %}
