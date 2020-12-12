@@ -1,0 +1,52 @@
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
+
+{% block title %}Completed Tasks{% endblock %}
+
+{% block content %}
+
+<h1>Hi you entered completed tasks in edit mode</h1>
+<br>
+{% if completedTasks %}
+<h2>Any type of tasks</h2>
+{% for task in completedTasks %}
+{% if task.type == "anything" %}
+<form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="taskID" value="{{ task.pk }}">
+    <div>{{ task.task }} </div>
+    <div>by {{ task.user }} </div>
+    <button name="removeBtn" class="btn btn-danger">Got it, remove</button>
+</form>
+{% endif %}
+{% endfor %}
+<br>
+<h2>Weekly Cleaning</h2>
+{% for task in completedTasks %}
+{% if task.type == "clean" %}
+<form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="taskID" value="{{ task.pk }}">
+    <div>{{ task.task }} </div>
+    <div>by {{ task.user }} </div>
+    <button name="removeBtn" class="btn btn-danger">Got it, remove</button>
+</form>
+{% endif %}
+{% endfor %}
+<br>
+<h2>Kitchen</h2>
+{% for task in completedTasks %}
+{% if task.type == "kitchen" %}
+<form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="taskID" value="{{ task.pk }}">
+    <div>{{ task.task }} </div>
+    <div>by {{ task.user }} </div>
+    <button name="removeBtn" class="btn btn-danger">Got it, remove</button>
+</form>
+{% endif %}
+{% endfor %}
+{% else %}
+<div>No completed tasks</div>
+{% endif %}
+
+{% endblock %}

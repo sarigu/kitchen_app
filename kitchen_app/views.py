@@ -510,3 +510,13 @@ def delete_event(request, room_id):
         event = get_object_or_404(Events, pk=eventID)
         event.delete()
     return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
+
+def admin_completed_tasks(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    completedTasks = Tasks.objects.filter(room=room_id).filter(status=True)
+    context={  
+        'room': room,   
+        'completedTasks': completedTasks, 
+    }
+    return render(request, 'kitchen_app/admin_completed_tasks.html', context)

@@ -21,4 +21,5 @@ urlpatterns = [
    path('edit_profile/<int:room_id>/', views.edit_profile, name='edit_profile'),
    path('admin_view/<int:room_id>/', views.admin_view, name='admin_view'),  
    path('delete_event/<int:room_id>/', views.delete_event, name='delete_event'),  
+   path('admin_completed_tasks/<int:room_id>/', views.admin_completed_tasks, name='admin_completed_tasks'), 
 ]
