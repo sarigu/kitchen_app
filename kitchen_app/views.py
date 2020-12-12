@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 
-@login_required
+
 def index(request):
     rooms = []
     queryset = RoomMembers.objects.filter(user=request.user).values_list('room', flat=True)
@@ -22,7 +22,7 @@ def index(request):
     }
     return render(request, 'kitchen_app/index.html', context)
 
-@login_required
+
 def create_room(request):
     if request.method == 'POST':
         form = RoomForm(request.POST)
@@ -43,7 +43,7 @@ def create_room(request):
     }
     return render(request, 'kitchen_app/index.html', context)
 
-@login_required
+
 def enter_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
@@ -154,7 +154,6 @@ def enter_room(request, room_id):
  
     return render(request, 'kitchen_app/dashboard.html', context)
 
-@login_required
 def members(request, room_id):
     members = RoomMembers.objects.filter(room=room_id)
     room = get_object_or_404(Room, pk=room_id)
@@ -194,7 +193,7 @@ def members(request, room_id):
 
     return render(request, 'kitchen_app/members.html', context)
 
-@login_required
+
 def profile(request, room_id):
     userDetails = get_object_or_404(UserProfile, user=request.user)
     room = get_object_or_404(Room, pk=room_id)
@@ -205,7 +204,7 @@ def profile(request, room_id):
     }
     return render(request, 'kitchen_app/profile.html', context)
 
-@login_required
+
 def edit_profile(request, room_id):
     user = get_object_or_404(User, pk=request.user.pk)
     userDetails = get_object_or_404(UserProfile, user=request.user)
@@ -231,7 +230,7 @@ def edit_profile(request, room_id):
    
     return render(request, 'kitchen_app/edit-profile.html', context)
 
-@login_required
+
 def kitchen_fund(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
@@ -249,7 +248,7 @@ def kitchen_fund(request, room_id):
         Tasks.create(None, room, newTask, "kitchen", None)
     return render(request, 'kitchen_app/kitchen_fund.html', context)
 
-@login_required
+
 def weekly_cleaning(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     queryset = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(type="clean")
@@ -275,7 +274,7 @@ def weekly_cleaning(request, room_id):
 
     return render(request, 'kitchen_app/weekly_cleaning.html', context)
 
-@login_required
+
 def schedule(request, room_id):
     room = get_object_or_404(Room, pk=room_id)  
     members = RoomMembers.objects.filter(room=room_id) 
@@ -323,7 +322,7 @@ def schedule(request, room_id):
                         
     return render(request, 'kitchen_app/cleaning_schedule.html', context)
 
-@login_required
+
 def create_event(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
@@ -348,7 +347,7 @@ def create_event(request, room_id):
 
     return render(request, 'kitchen_app/dashboard.html', context)
 
-@login_required
+
 def event(request, room_id, event_id):
     room = get_object_or_404(Room, pk=room_id)
     event = get_object_or_404(Events, pk=event_id)
@@ -359,7 +358,7 @@ def event(request, room_id, event_id):
     }
     return render(request, 'kitchen_app/event_details.html', context)
 
-@login_required
+
 def completed_task(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
 
