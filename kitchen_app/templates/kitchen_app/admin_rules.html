@@ -7,6 +7,9 @@
 <h1>Rules</h1>
 {% if rules %}
 <div>{{ rules.text }}</div>
+<div>
+    <h2>Last edited on </h2>{{ rules.updated_at }}
+</div>
 {% endif %}
 <a href="{% url 'kitchen_app:edit_rules' room.pk %}" class="btn btn-lg btn-primary">Edit rules</a>
 {% endblock %}

@@ -6,6 +6,9 @@
 <h1>Rules</h1>
 {% if rules %}
 <div>{{ rules.text }}</div>
+<div>
+    <h2>Last edited on </h2>{{ rules.updated_at }}
+</div>
 {% endif %}
 
 {% endblock %}

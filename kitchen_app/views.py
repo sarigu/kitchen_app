@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules
-from datetime import date
+from datetime import datetime
+import datetime
 from isoweek import Week
 from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
@@ -604,6 +605,7 @@ def edit_rules(request, room_id):
 
     if request.method == 'POST':
         rules.text = request.POST['text']
+        rules.updated_at = datetime.datetime.now()
         rules.save()   
         return HttpResponseRedirect(reverse('kitchen_app:admin_rules', args=(room.id,)))
    

@@ -65,10 +65,10 @@ class Rules (models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=2000, null=True, blank=True)
-    updated = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.room} - {self.created_at} - {self.text} - {self.updated}"
+        return f"{self.room} - {self.created_at} - {self.text} - {self.updated_at}"
 
 
 
