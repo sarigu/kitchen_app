@@ -1,0 +1,27 @@
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
+
+{% block title %}Rules{% endblock %}
+
+{% block content %}
+
+<h1>Weekly Cleaning Tasks</h1>
+{% if listTasks %}
+
+<ul class="list-group">
+    {% for listTask in listTasks %}
+    <form class="list-group-item" action="{% url 'kitchen_app:admin_cleaning_tasks' room.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="listTaskID" value="{{ listTask.pk }}">
+        {{ listTask.task}}
+        <input type="submit" name="removeBtn" class="btn btn-danger" value="remove">
+    </form>
+    {% endfor %}
+</ul>
+{% endif %}
+<hr>
+<form class="list-group-item" action="{% url 'kitchen_app:admin_cleaning_tasks' room.pk %}" method="POST">
+    {% csrf_token %}
+    <input required type="text" name="listTask" placeholder="task">
+    <input class="btn btn-primary" name="addBtn" type="submit" value="add">
+</form>
+{% endblock %}

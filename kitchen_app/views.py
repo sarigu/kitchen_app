@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules
+from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules, ListTasks, List
 from datetime import datetime
 import datetime
 from isoweek import Week
@@ -698,3 +698,28 @@ def admin_kitchen_fund(request, room_id):
 
 
     return render(request, 'kitchen_app/admin_kitchen_fund.html', context)
+
+def admin_cleaning_tasks(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    list = get_object_or_404(List, pk=1)
+    listTasks = ListTasks.objects.filter(list=list)
+
+    context={ 
+        'room': room,
+        'listTasks': listTasks,
+    }
+
+    if request.method == 'POST' and 'addBtn' in request.POST:
+        newTask = request.POST['listTask']
+        ListTasks.create(list, newTask)
+        return HttpResponseRedirect(reverse('kitchen_app:admin_cleaning_tasks', args=(room.id,)))
+
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        listTaskID = request.POST['listTaskID']
+        listTask = get_object_or_404(listTasks, pk=listTaskID)
+        listTask.delete()
+     
+        return HttpResponseRedirect(reverse('kitchen_app:admin_cleaning_tasks', args=(room.id,)))
+
+    return render(request, 'kitchen_app/admin_cleaning_tasks.html', context)

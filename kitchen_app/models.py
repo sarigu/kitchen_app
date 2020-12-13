@@ -38,7 +38,7 @@ class Room (models.Model):
     fund = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"{self.name} - {self.backgroundImage} - {self.mobilePayBox} - {self.fund}"
+        return f"{self.name}"
 
 
 class RoomForm(ModelForm):
@@ -116,6 +116,26 @@ class Subtasks (models.Model):
     def __str__(self):
         return f"{self.task} - {self.pk} - {self.taskDescription} - {self.status}"
 
+class List (models.Model):
+    title = models.CharField(max_length=200)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.pk} - {self.title} - {self.room}"
+
+class ListTasks (models.Model):
+    list = models.ForeignKey(List, on_delete=models.CASCADE)
+    task = models.CharField(max_length=200)
+    
+    @classmethod
+    def create(cls, list, task):
+        listTask = cls()
+        listTask.list = list
+        listTask.task = task
+        listTask.save()
+
+    def __str__(self):
+        return f"{self.list} - {self.task}"
 
 class Events (models.Model):
     title = models.CharField(max_length=100)

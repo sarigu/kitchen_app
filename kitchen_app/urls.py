@@ -29,5 +29,6 @@ urlpatterns = [
    path('edit_rules/<int:room_id>/', views.edit_rules, name='edit_rules'),  
    path('view_images/<int:room_id>/', views.view_images, name='view_images'),  
    path('test/<int:room_id>/', views.test, name='test'),  
-   path('admin_kitchen_fund/<int:room_id>/', views.admin_kitchen_fund, name='admin_kitchen_fund'), 
+   path('admin_kitchen_fund/<int:room_id>/', views.admin_kitchen_fund, name='admin_kitchen_fund'),
+   path('admin_cleaning_tasks/<int:room_id>/', views.admin_cleaning_tasks, name='admin_cleaning_tasks'),
 ]
