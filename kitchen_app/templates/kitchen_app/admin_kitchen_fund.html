@@ -1,0 +1,92 @@
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
+
+{% block title %}Kitchen Fund{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Kitchen fund page</h1>
+    <hr>
+    <div>
+        <h2>Total amount</h2>
+        <h5>{{ room.fund }} DKK</h5>
+        <form class="list-group-item" action="{% url 'kitchen_app:admin_kitchen_fund' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input required type="number" name="amount" placeholder="total amount"> DKK
+            <input class="btn btn-primary" name="updateAmountBtn" type="submit" value="update total amount">
+        </form>
+    </div>
+    <div>
+        <hr>
+        <h2>Mobile Pay Box</h2>
+        <h5>{{ room.mobilePayBox }} </h5>
+        <form class="list-group-item" action="{% url 'kitchen_app:admin_kitchen_fund' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input required type="text" name="mobilePayBox" placeholder="mobile pay box">
+            <input class=" btn btn-primary" name="changeBoxBtn" type="submit" value="Update">
+        </form>
+        <hr>
+    </div>
+
+    <div>
+        <h2>Buying List</h2>
+        <ul class="list-group">
+            {% if tasks %}
+            {% for task in tasks %}
+            <form class="list-group-item" action="{% url 'kitchen_app:admin_kitchen_fund' room.pk %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="taskID" value="{{ task.pk }}">
+                <div>{{ task.task }} </div>
+                <button name="removeBtn" class="btn btn-danger">Remove</button>
+            </form>
+            {% endfor %}
+            {% else %}
+            <p>no tasks</p>
+            {% endif %}
+        </ul>
+        <br>
+        <form class="list-group-item" action="{% url 'kitchen_app:admin_kitchen_fund' room.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="task" placeholder="f.e. get baking paper">
+            <input class="btn btn-primary" name="addBtn" type="submit" value="Add">
+        </form>
+    </div>
+    <hr>
+    <div>
+        <h2>Get paid back</h2>
+        <h5>Open Requests</h5>
+        <ul class="list-group">
+            {% if requestedPayments %}
+            {% for requestedPayment in requestedPayments%}
+
+            <form class="list-group-item" action="{% url 'kitchen_app:admin_kitchen_fund' room.pk %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="taskID" value="{{ requestedPayment.pk }}">
+                <div>{{ requestedPayment.task }} </div>
+                <button name="doneBtn" class="btn btn-success">Done</button>
+            </form>
+            {% endfor %}
+            {% else %}
+            <p>No open requests</p>
+            {% endif %}
+        </ul>
+    </div>
+    <hr>
+    <div>
+        <h2>Reciepts</h2>
+        {% if donePayments %}
+        <ul class="list-group">
+            {% for donePayment in donePayments%}
+            <form class="list-group-item" action="{% url 'kitchen_app:admin_kitchen_fund' room.pk %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="taskID" value="{{ donePayment.pk }}">
+                <div> {{ donePayment.task }} </div>
+                <button name="removeRecieptBtn" class="btn btn-danger">Remove</button>
+            </form>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No Reciepts</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -34,9 +34,11 @@ class UserProfile(models.Model):
 class Room (models.Model):
     name = models.CharField(max_length=100)
     backgroundImage = models.CharField(max_length=100, blank=True, null=True)
+    mobilePayBox = models.CharField(max_length=6 , blank=True, null=True )
+    fund = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"{self.name} - {self.backgroundImage}"
+        return f"{self.name} - {self.backgroundImage} - {self.mobilePayBox} - {self.fund}"
 
 
 class RoomForm(ModelForm):
@@ -70,8 +72,6 @@ class Rules (models.Model):
 
     def __str__(self):
         return f"{self.room} - {self.created_at} - {self.text} - {self.updated_at}"
-
-
 
 
 class Tasks (models.Model):

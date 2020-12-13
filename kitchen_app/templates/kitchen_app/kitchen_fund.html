@@ -7,11 +7,18 @@
     <h1>This is the kitchen fund page</h1>
     <hr>
     <div>
-        <h2>Amount</h2>
+        <h2>Total amount</h2>
+        <h5>{{ room.fund }} DKK</h5>
     </div>
     <hr>
     <div>
-        <h2>What to get</h2>
+        <h2>Mobile Pay Box</h2>
+        <h5>{{ room.mobilePayBox }} </h5>
+    </div>
+    <hr>
+
+    <div>
+        <h2>Buying List</h2>
         <ul class="list-group">
             {% if tasks %}
             {% for task in tasks %}
@@ -19,17 +26,48 @@
             {% endfor %}
             {% endif %}
         </ul>
-        <hr>
+        <br>
         <form class="list-group-item" action="{% url 'kitchen_app:kitchen_fund' room.pk %}" method="POST">
             {% csrf_token %}
-            <input type="text" name="task" placeholder="task">
-            <input class="btn btn-primary" name="addBtn" type="submit" value="Add what to get">
+            <input type="text" name="task" placeholder="f.e. get baking paper">
+            <input class="btn btn-primary" name="addBtn" type="submit" value="Add">
         </form>
-        <hr>
-        <h2>Payments</h2>
-        <hr>
-        <h2>Get paid back</h2>
     </div>
-</div>
+    <hr>
+    <div>
+        <h2>Get paid back</h2>
+        <h5>Open Requests</h5>
+        <ul class="list-group">
+            {% if requestedPayments %}
+            {% for requestedPayment in requestedPayments%}
+            <li class="list-group-item"> {{ requestedPayment.task }} </li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+        <br>
+        <form class="list-group-item" action="{% url 'kitchen_app:kitchen_fund' room.pk %}" method="POST">
+            {% csrf_token %}
+            <label for="amount">Amount in DKK</label>
+            <input required type="number" name="amount" placeholder="amount">
+            <input required type="text" name="purchase" placeholder="what for">
+            <input class="btn btn-primary" name="requestBtn" type="submit" value="Request">
+        </form>
+    </div>
+    <hr>
+    <div>
+        <h2>Reciepts</h2>
+        {% if donePayments %}
+        <ul class="list-group">
+            {% for donePayment in donePayments%}
+            <li class="list-group-item">
+                {{ donePayment.task }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No Reciepts</p>
+        {% endif %}
+    </div>
+
 </div>
 {% endblock %}

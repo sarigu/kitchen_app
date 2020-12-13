@@ -217,18 +217,31 @@ def kitchen_fund(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
     members = RoomMembers.objects.filter(room=room_id)
+    requestedPayments = Tasks.objects.filter(room=room_id).filter(type="payback")
+    donePayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=True)
     
     context = {
         'user': request.user,   
         'room': room,
         'tasks': tasks,
         'members': members,
+        'requestedPayments': requestedPayments,
+        'donePayments': donePayments,
     }
 
     if request.method == 'POST' and 'addBtn' in request.POST:
         newTask = request.POST['task']
         Tasks.create(None, room, newTask, "kitchen", None)
         return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
+    
+    if request.method == 'POST' and 'requestBtn' in request.POST:
+        amount = request.POST['amount']
+        purchase = request.POST['purchase'] 
+        text = amount + 'DKK for ' + purchase + ' to ' + str(request.user)
+        Tasks.create(None, room, text, "payback", None)
+   
+        return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
+
 
     return render(request, 'kitchen_app/kitchen_fund.html', context)
 
@@ -245,7 +258,6 @@ def weekly_cleaning(request, room_id):
         'user': request.user,   
         'room': room,
         'subtasks': subtasks
-        
     }
 
     if request.method == 'POST':
@@ -631,3 +643,58 @@ def test(request, room_id):
     
     return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
     
+def admin_kitchen_fund(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
+    members = RoomMembers.objects.filter(room=room_id)
+    requestedPayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=False)
+    donePayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=True)
+    
+    context = {
+        'user': request.user,   
+        'room': room,
+        'tasks': tasks,
+        'members': members,
+        'requestedPayments': requestedPayments,
+        'donePayments': donePayments,
+    }
+
+    if request.method == 'POST' and 'updateAmountBtn' in request.POST:
+        amount = request.POST['amount']
+        room.fund = amount
+        room.save()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_kitchen_fund', args=(room.id,)))
+
+    if request.method == 'POST' and 'changeBoxBtn' in request.POST:
+        newMobilePayBox = request.POST['mobilePayBox']
+        room.mobilePayBox = newMobilePayBox
+        room.save()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_kitchen_fund', args=(room.id,)))
+    
+    if request.method == 'POST' and 'removeBtn' in request.POST:
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_kitchen_fund', args=(room.id,)))
+
+    if request.method == 'POST' and 'doneBtn' in request.POST:
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.status = True
+        task.save()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_kitchen_fund', args=(room.id,)))
+
+    if request.method == 'POST' and 'addBtn' in request.POST:
+        newTask = request.POST['task']
+        Tasks.create(None, room, newTask, "kitchen", None)
+        return HttpResponseRedirect(reverse('kitchen_app:admin_kitchen_fund', args=(room.id,)))
+
+    if request.method == 'POST' and 'removeRecieptBtn' in request.POST:
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_kitchen_fund', args=(room.id,)))
+
+
+    return render(request, 'kitchen_app/admin_kitchen_fund.html', context)
