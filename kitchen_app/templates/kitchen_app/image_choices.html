@@ -1,0 +1,37 @@
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
+
+{% block title %}Image Choices{% endblock %}
+
+{% block content %}
+<h1>Choose an background image</h1>
+<form id="image-options" action="{% url 'kitchen_app:test' room.pk %}" method="POST">
+        {% csrf_token %}
+</form>
+
+
+{% endblock %}
+{% block footer %}
+
+<script>
+        var options = document.querySelector(" #image-options");
+
+        fetch('http://127.0.0.1:8000/api/images/')
+                .then(response => response.json())
+                .then(json => {
+
+                        for (let i = 0; i < json.length; i++) {
+                                imageUrl = 'http://127.0.0.1:8000/api/id/' + json[i];
+                                console.log(json[i]);
+                                console.log(imageUrl);
+                                var imageDiv = `<input
+                                                        name="imageID" type="submit" value="${json[i]}"
+                                                        style="height:200px; width:500px; background-image:url(${imageUrl})">
+                                                </input>`
+                                options.innerHTML += imageDiv;
+                        }
+                })
+                .catch(err => console.log('Request Failed', err));
+
+
+</script>
+{% endblock %}

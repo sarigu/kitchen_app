@@ -3,5 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path('id/<int:id>/', views.getImage.as_view()),
+    path('images/', views.images.as_view()),
+    path('id/<int:id>/', views.get_image.as_view()), 
 ]

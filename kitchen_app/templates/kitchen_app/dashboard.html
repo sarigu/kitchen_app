@@ -4,8 +4,9 @@
 
 {% block content %}
 <div>
-    <div style="width:100%; height:220px; background-image: url(http://127.0.0.1:8000/api/id/1); margin-bottom:40px">
+    <div style="width:100%; height:220px; background-image: url('  {{ room.backgroundImage }}'); margin-bottom:40px">
     </div>
+
     <h1>Hi you entered the dashboard {{ room.name }}</h1>
     <hr>
     <div>

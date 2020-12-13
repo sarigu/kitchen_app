@@ -33,9 +33,10 @@ class UserProfile(models.Model):
 
 class Room (models.Model):
     name = models.CharField(max_length=100)
+    backgroundImage = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} - {self.backgroundImage}"
 
 
 class RoomForm(ModelForm):

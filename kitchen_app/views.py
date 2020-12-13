@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from .utils import is_room_admin
 
 
+
 def index(request):
     rooms = []
     queryset = RoomMembers.objects.filter(user=request.user).values_list('room', flat=True)
@@ -37,6 +38,7 @@ def create_room(request):
 
 
 def enter_room(request, room_id):
+
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
     unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
@@ -610,3 +612,22 @@ def edit_rules(request, room_id):
         return HttpResponseRedirect(reverse('kitchen_app:admin_rules', args=(room.id,)))
    
     return render(request, 'kitchen_app/edit_rules.html', context)
+
+
+def view_images(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    context={ 'room': room,}
+    return render(request, 'kitchen_app/image_choices.html', context)
+
+def test(request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+
+    if request.method == 'POST':
+        imageID= request.POST['imageID']
+        room.backgroundImage = 'http://127.0.0.1:8000/api/id/' + imageID
+        room.save()
+    
+    return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+    

@@ -140,6 +140,8 @@ STATIC_URL = '/static/'
 
 
 EXCLUDED_URLS = (
+    'api/images/',
+    'api/id/<int:id>/',
     'admin/login/',
     'accounts/login/',
     'accounts/logout/',

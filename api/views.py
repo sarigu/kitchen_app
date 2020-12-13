@@ -1,15 +1,22 @@
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.views import APIView
 from .custom_renderers import JPEGRenderer, PGNRenderer
 from rest_framework.response import Response
 from images.models import Images
 
+
 # Create your views here.
-class getImage(generics.RetrieveAPIView):
-    renderer_classes = [JPEGRenderer]
+
+class get_image(generics.RetrieveAPIView):
     renderer_classes = [PGNRenderer]
 
     def get(self, request, *args, **kwargs):
-        queryset = Images.objects.get(id=self.kwargs['id']).image
-        data = queryset
-        return Response(data, content_type='image/jpg')
+        image = Images.objects.get(id=self.kwargs['id']).image
+        return Response(image, content_type='image/png')
+
+
+class images(generics.RetrieveAPIView):
+    def get(self, request,):
+        imageIDs = Images.objects.values_list('pk', flat=True)
+        return Response(imageIDs)
