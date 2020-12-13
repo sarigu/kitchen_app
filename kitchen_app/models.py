@@ -109,6 +109,14 @@ class Subtasks (models.Model):
     taskDescription = models.CharField(max_length=200)
     status = models.BooleanField(default=False)
 
+    @classmethod
+    def create(cls, task, taskDescription):
+        listTask = cls()
+        listTask.task = task
+        listTask.taskDescription = taskDescription
+        listTask.save()
+
+
     def toggle_status(self):
         self.status = not self.status
         self.save()

@@ -584,6 +584,12 @@ def admin_schedule(request, room_id):
                 assignedUser = request.POST['members_choice']
                 user = get_object_or_404(User, username=assignedUser)  
                 Tasks.create(user, room, "weekly cleaning", "clean", dueToWeek)
+                queryset = Tasks.objects.filter(room=room_id)
+                task = get_object_or_404(queryset, deadline=dueToWeek.isoformat())
+                list = get_object_or_404(List, pk=1)
+                listTasks = ListTasks.objects.filter(list=list)
+                for listTask in listTasks:
+                    Subtasks.create(task, listTask.task)
                 return HttpResponseRedirect(reverse('kitchen_app:admin_schedule', args=(room.id,)))
         except IntegrityError as e:
             context['error'] = "Week is taken"

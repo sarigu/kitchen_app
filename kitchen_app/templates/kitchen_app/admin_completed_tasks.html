@@ -7,7 +7,7 @@
 <h1>Hi you entered completed tasks in edit mode</h1>
 <br>
 {% if completedTasks %}
-<h2>Any type of tasks</h2>
+<h2>Other tasks</h2>
 {% for task in completedTasks %}
 {% if task.type == "anything" %}
 <form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
@@ -28,6 +28,7 @@
     <input type="hidden" name="taskID" value="{{ task.pk }}">
     <div>{{ task.task }} </div>
     <div>by {{ task.user }} </div>
+    <div> {{ task.deadline }} </div>
     <button name="removeBtn" class="btn btn-danger">Cool, remove</button>
 </form>
 {% endif %}
