@@ -34,8 +34,8 @@ class UserProfile(models.Model):
 class Room (models.Model):
     name = models.CharField(max_length=100)
     backgroundImage = models.CharField(max_length=100, blank=True, null=True)
-    mobilePayBox = models.CharField(max_length=6 ,default=0 )
-    fund = models.DecimalField(max_digits=10, decimal_places=2 , blank=True, null=True )
+    mobilePayBox = models.CharField(max_length=6,  blank=True, null=True )
+    fund = models.DecimalField(max_digits=10, decimal_places=2 ,default=0  )
     dorm = models.CharField(max_length=100 , blank=True, null=True )
 
     def __str__(self):
