@@ -1,0 +1,26 @@
+{% extends 'kitchen_app/base_admin_dashboard.html' %}
+
+{% block title %}Room Info{% endblock %}
+
+{% block content %}
+
+<h1>Room Info</h1>
+
+<form action="{% url 'kitchen_app:admin_edit_room' room.pk %}" method="POST">
+    {% csrf_token %}
+    <label for="name">Name</label>
+    <input name="name" type="text" value="{{ room.name }}">
+    <br>
+    <label for="mobilePayBox">Mobile Pay Box</label>
+    <input name="mobilePayBox" type="text" value="{{ room.mobilePayBox }}">
+    <br>
+    <label for="fund">Fund</label>
+    <input name="fund" step="0.01" type="number" value="{{ room.fund }}">
+    <br>
+    <label for="dorm">Dorm</label>
+    <input name="dorm" type="text" value="{{ room.dorm }}">
+    <br>
+    <button type="submit" class="btn btn-lg btn-primary">Update</button>
+</form>
+
+{% endblock %}

@@ -32,6 +32,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'kitchen_app:admin_edit_room' room.pk %}">
+                                Room Info
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'kitchen_app:admin_members' room.pk %}">
                                 Members
                             </a>

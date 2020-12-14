@@ -11,7 +11,7 @@
         <h5>{{ room.fund }} DKK</h5>
         <form class="list-group-item" action="{% url 'kitchen_app:admin_kitchen_fund' room.pk %}" method="POST">
             {% csrf_token %}
-            <input required type="number" name="amount" placeholder="total amount"> DKK
+            <input required type="number" step="0.01" name="amount" placeholder="total amount"> DKK
             <input class="btn btn-primary" name="updateAmountBtn" type="submit" value="update total amount">
         </form>
     </div>

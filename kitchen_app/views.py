@@ -755,3 +755,21 @@ def admin_cleaning_tasks(request, room_id):
         return HttpResponseRedirect(reverse('kitchen_app:admin_cleaning_tasks', args=(room.id,)))
 
     return render(request, 'kitchen_app/admin_cleaning_tasks.html', context)
+
+def admin_edit_room (request, room_id):
+    assert is_room_admin(request.user, room_id), 'Member routed to member view.'
+    room = get_object_or_404(Room, pk=room_id)
+    context={ 
+        'room': room,
+    }
+
+    if request.method == 'POST':
+        room.name = request.POST['name']
+        room.mobilePayBox = request.POST['mobilePayBox']
+        room.fund = request.POST['fund']
+        room.dorm = request.POST['dorm']
+        room.save()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_edit_room', args=(room.id,)))
+
+    return render(request, 'kitchen_app/admin_room_info.html', context)
+
