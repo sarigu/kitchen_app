@@ -8,8 +8,8 @@ from isoweek import Week
 from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 from .utils import is_room_admin
+
 
 
 
@@ -176,7 +176,6 @@ def members(request, room_id):
                     chaturl = chatroom.name
                     chatExists = True
                     return HttpResponseRedirect(reverse('chat:chatroom' ,args=( chaturl,)))
-           
 
     context = {
         'user': request.user,   
@@ -381,9 +380,17 @@ def completed_task(request, room_id):
 
 def enter_chat(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    print("workd")
     return HttpResponseRedirect(reverse('kitchen_app:members', args=(room.id,)))
 
+def leave_room(request, room_id):
+        room = get_object_or_404(Room, pk=room_id)
+        member = get_object_or_404(RoomMembers.objects.filter(room=room_id), user=request.user)
+        print(member)
+        if(member):
+            member.delete()
+         
+        return HttpResponseRedirect(reverse('kitchen_app:index'))
+      
 #####  admin edit mode
 
 def admin_view(request, room_id):

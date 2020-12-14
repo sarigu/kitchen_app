@@ -32,4 +32,5 @@ urlpatterns = [
    path('admin_kitchen_fund/<int:room_id>/', views.admin_kitchen_fund, name='admin_kitchen_fund'),
    path('admin_cleaning_tasks/<int:room_id>/', views.admin_cleaning_tasks, name='admin_cleaning_tasks'),
    path('enter_chat/<int:room_id>/', views.enter_chat, name='enter_chat'),
+   path('leave_room/<int:room_id>/', views.leave_room, name='leave_room'),
 ]

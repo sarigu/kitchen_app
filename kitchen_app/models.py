@@ -35,10 +35,11 @@ class Room (models.Model):
     name = models.CharField(max_length=100)
     backgroundImage = models.CharField(max_length=100, blank=True, null=True)
     mobilePayBox = models.CharField(max_length=6 , blank=True, null=True )
-    fund = models.DecimalField(max_digits=10, decimal_places=2)
+    fund = models.DecimalField(max_digits=10, decimal_places=2 , blank=True, null=True )
+    dorm = models.CharField(max_length=100 , blank=True, null=True )
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} - {self.dorm}"
 
 
 class RoomForm(ModelForm):
@@ -62,7 +63,7 @@ class RoomMembers (models.Model):
         roomMember.save()
 
     def __str__(self):
-        return f"{self.user} - {self.user.pk} - {self.room} - {self.status} - {self.created_at}"
+        return f"{self.pk}- {self.user} - {self.user.pk} - {self.room} - {self.status} - {self.created_at}"
 
 class Rules (models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -249,5 +250,6 @@ class ChatMembers (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
 
+
     def __str__(self):
-        return f"{self.chat} - {self.user}  - {self.room}"
+        return f"{self.chat} - {self.user} - {self.room}"
