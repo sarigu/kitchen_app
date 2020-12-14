@@ -41,7 +41,7 @@ def enter_room(request, room_id):
 
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
-    unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
+    unassignedTasks = Tasks.objects.filter(room=room_id).filter(status=False).exclude(user__isnull=False)
     assignedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(status=False)
     events = Events.objects.filter(room=room_id)
     posts = Posts.objects.filter(room=room_id)
@@ -390,7 +390,7 @@ def admin_view(request, room_id):
     assert is_room_admin(request.user, room_id), 'Member routed to member view.'
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
-    unassignedTasks = Tasks.objects.filter(room=room_id).exclude(user__isnull=False)
+    unassignedTasks = Tasks.objects.filter(room=room_id).filter(status=False).exclude(user__isnull=False)
     assignedTasks = Tasks.objects.filter(room=room_id).filter(status=False).exclude(user__isnull=True)
     events = Events.objects.filter(room=room_id)
     posts = Posts.objects.filter(room=room_id)
