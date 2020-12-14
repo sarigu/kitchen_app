@@ -562,7 +562,8 @@ def admin_members(request, room_id):
     if request.method == 'POST' and 'addBtn' in request.POST:
         userID = request.POST['userID']
         user = get_object_or_404(User, pk=userID)
-        RoomMembers.create(user, room, "member")
+        if not RoomMembers.objects.filter(room=room).filter(user=user).exists():
+            RoomMembers.create(user, room, "member")
         return HttpResponseRedirect(reverse('kitchen_app:admin_members', args=(room.id,)))
 
     if request.method == 'POST' and 'removeBtn' in request.POST:
