@@ -6,13 +6,13 @@
 <h1>Members</h1>
 <ul class="list-group">
     {% for member in members %}
-    <ul class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
+    <form class="list-group-item" action="{% url 'kitchen_app:members' room.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="chatToID" value="{{ member.user.pk }}">
         <h3>{{ member.user }}</h3>
-        <span class="badge badge-light">{{ member.status }}</span>
-    </ul>
-    <a class="nav-link active" href="{% url 'chat:index'%}" target="_blank">
-        Chat with {{ member.user }}
-    </a>
+        <span class="badge badge-light">{{ member.status }}</span><br>
+        <button name="chatBtn" class="btn btn-sm btn-success"> Chat with {{ member.user }}</button>
+    </form>
     {% endfor %}
 </ul>
 {% endblock %}

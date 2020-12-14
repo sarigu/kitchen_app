@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules, List, ListTasks
+from .models import Room, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules, List, ListTasks, Chat, ChatMembers
 
 admin.site.register(Room)
 admin.site.register(RoomMembers)
@@ -13,4 +13,6 @@ admin.site.register(UserProfile)
 admin.site.register(Rules)
 admin.site.register(List)
 admin.site.register(ListTasks)
+admin.site.register(Chat)
+admin.site.register(ChatMembers)
 

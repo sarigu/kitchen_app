@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules, ListTasks, List
+from .models import User, Room, RoomForm, RoomMembers, Tasks, Subtasks, Events, Posts, Comments, Likes, UserProfile, Rules, ListTasks, List, Chat, ChatMembers
 from datetime import datetime
 import datetime
 from isoweek import Week
@@ -161,6 +161,20 @@ def enter_room(request, room_id):
 def members(request, room_id):
     members = RoomMembers.objects.filter(room=room_id)
     room = get_object_or_404(Room, pk=room_id)
+
+    if request.method == 'POST':
+        chatToID = request.POST['chatToID']
+        chatToUser = get_object_or_404(User, pk=chatToID)
+
+        if chatToUser != request.user:
+            chatFrom = ChatMembers.objects.filter(room=room).filter(user = request.user)
+            for chat in chatFrom:
+                checkForChat = ChatMembers.objects.filter(room=room).filter(user = chatToUser).filter(chat=chat.chat.pk).exists()
+                if checkForChat:
+                    chatID = chat.chat.pk
+                    chatroom = get_object_or_404(Chat, pk=chatID)
+                    chaturl = chatroom.name
+                    return HttpResponseRedirect(reverse('chat:chatroom' ,args=( chaturl,)))
 
     context = {
         'user': request.user,   
@@ -362,6 +376,11 @@ def completed_task(request, room_id):
         'members': members,
     }
     return render(request, 'kitchen_app/completed_tasks.html', context)
+
+def enter_chat(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    print("workd")
+    return HttpResponseRedirect(reverse('kitchen_app:members', args=(room.id,)))
 
 #####  admin edit mode
 

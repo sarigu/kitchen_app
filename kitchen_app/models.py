@@ -237,4 +237,17 @@ class Comments (models.Model):
     def __str__(self):
         return f"{self.text} - {self.pk} - {self.user} - {self.created_at} - {self.parent}"
 
+class Chat (models.Model):
+    name = models.CharField(max_length=250)
 
+    def __str__(self):
+        return f"{self.name} - {self.pk}"
+
+
+class ChatMembers (models.Model):
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.chat} - {self.user}  - {self.room}"
