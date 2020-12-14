@@ -174,7 +174,9 @@ def members(request, room_id):
                     chatID = chat.chat.pk
                     chatroom = get_object_or_404(Chat, pk=chatID)
                     chaturl = chatroom.name
+                    chatExists = True
                     return HttpResponseRedirect(reverse('chat:chatroom' ,args=( chaturl,)))
+           
 
     context = {
         'user': request.user,   
@@ -231,7 +233,7 @@ def kitchen_fund(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
     members = RoomMembers.objects.filter(room=room_id)
-    requestedPayments = Tasks.objects.filter(room=room_id).filter(type="payback")
+    requestedPayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=False)
     donePayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=True)
     
     context = {
@@ -671,7 +673,7 @@ def test(request, room_id):
 def admin_kitchen_fund(request, room_id):
     assert is_room_admin(request.user, room_id), 'Member routed to member view.'
     room = get_object_or_404(Room, pk=room_id)
-    tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
+    tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen").filter(status=False)
     members = RoomMembers.objects.filter(room=room_id)
     requestedPayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=False)
     donePayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=True)
