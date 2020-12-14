@@ -231,7 +231,7 @@ def edit_profile(request, room_id):
 
 def kitchen_fund(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen")
+    tasks = Tasks.objects.filter(room=room_id).filter(type="kitchen").filter(status=False)
     members = RoomMembers.objects.filter(room=room_id)
     requestedPayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=False)
     donePayments = Tasks.objects.filter(room=room_id).filter(type="payback").filter(status=True)

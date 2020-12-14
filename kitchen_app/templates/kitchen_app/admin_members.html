@@ -10,6 +10,7 @@
         {% csrf_token %}
         <input type="hidden" name="memberID" value="{{ member.user.pk }}">
         <h3>{{ member.user }}</h3>
+        <p>{{ user.email }}</p>
         <span class="badge badge-light">{{ member.status }}</span>
 
         <br>
