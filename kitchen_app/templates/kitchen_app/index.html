@@ -47,6 +47,7 @@
                 <form action="{% url 'kitchen_app:create_room' %}" method="POST">
                     {% csrf_token %}
                     <input required type="text" name="name" placeholder="room name">
+                    <input required type="text" name="dorm" placeholder="dorm name">
                     <input type="submit" class="btn btn-primary" value="Create room">
                 </form>
             </div>

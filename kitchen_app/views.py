@@ -11,8 +11,6 @@ from django.contrib import messages
 from .utils import is_room_admin
 
 
-
-
 def index(request):
     rooms = []
     queryset = RoomMembers.objects.filter(user=request.user).values_list('room', flat=True)

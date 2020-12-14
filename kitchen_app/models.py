@@ -34,7 +34,7 @@ class UserProfile(models.Model):
 class Room (models.Model):
     name = models.CharField(max_length=100)
     backgroundImage = models.CharField(max_length=100, blank=True, null=True)
-    mobilePayBox = models.CharField(max_length=6 , blank=True, null=True )
+    mobilePayBox = models.CharField(max_length=6 ,default=0 )
     fund = models.DecimalField(max_digits=10, decimal_places=2 , blank=True, null=True )
     dorm = models.CharField(max_length=100 , blank=True, null=True )
 
@@ -45,7 +45,7 @@ class Room (models.Model):
 class RoomForm(ModelForm):
     class Meta:
         model = Room
-        fields = ['name']
+        fields = ['name', 'dorm']
 
 class RoomMembers (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
