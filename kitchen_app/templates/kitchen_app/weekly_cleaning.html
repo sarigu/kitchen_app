@@ -10,7 +10,7 @@
     <form class="list-group-item" action="{% url 'kitchen_app:weekly_cleaning' room.pk %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="taskID" value="{{ task.pk }}">
-        <div>{{ task.taskDescription }} {{ task.status }}</div>
+        <div>{{ task.taskDescription }}</div>
         {% if task.status == False %}
         <input type="submit" value="Done" name="doneBtn" class="btn btn-success">
         {% else %}

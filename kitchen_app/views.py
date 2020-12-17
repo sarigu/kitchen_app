@@ -674,7 +674,7 @@ def test(request, room_id):
         room.backgroundImage = 'http://127.0.0.1:8000/api/id/' + imageID
         room.save()
     
-    return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+    return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
     
 def admin_kitchen_fund(request, room_id):
     assert is_room_admin(request.user, room_id), 'Member routed to member view.'
