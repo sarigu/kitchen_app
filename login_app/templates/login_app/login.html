@@ -11,7 +11,7 @@
 
 <body>
     <h1>Login</h1>
-    <a href="#">Reset Password</a>
+    <a href="{% url 'login_app:password_reset' %}">Reset Password</a>
     <a href="{% url 'login_app:sign_up' %}">Create Account</a>
     <hr>
     <form action="{% url 'login_app:login' %}" method="POST" class="form-signin">

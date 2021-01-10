@@ -10,13 +10,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from .utils import is_room_admin
 
-
 def index(request):
+    #get all rooms the user is member of
     rooms = []
     queryset = RoomMembers.objects.filter(user=request.user).values_list('room', flat=True)
     for room in queryset:
         room = get_object_or_404(Room, pk=room)
         rooms.append(room)
+
     context={
         'rooms': rooms,
         'user': request.user,    
@@ -36,7 +37,6 @@ def create_room(request):
 
 
 def enter_room(request, room_id):
-
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
     unassignedTasks = Tasks.objects.filter(room=room_id).filter(status=False).exclude(user__isnull=False)
@@ -45,17 +45,20 @@ def enter_room(request, room_id):
     posts = Posts.objects.filter(room=room_id)
     comments = Comments.objects.filter(room=room_id)
 
+    # set user for a chosen task
     if request.method == 'POST' and 'takeTaskBtn' in request.POST:
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.setUser(request.user)
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
+    # create new task
     if request.method == 'POST' and 'addTaskBtn' in request.POST:
         newTask = request.POST['task']
         Tasks.create(None, room, newTask, "anything", None)
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
+    # set task status to true/mark as done
     if request.method == 'POST' and 'doneBtn' in request.POST:
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
@@ -63,17 +66,20 @@ def enter_room(request, room_id):
         task.save()
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
+    # delete a task
     if request.method == 'POST' and 'removeBtn' in request.POST:
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.delete()
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
+    # create a post
     if request.method == 'POST' and 'addPostBtn' in request.POST:
         postText = request.POST['post']
         Posts.create(postText, request.user, room)
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
+    # create a comment for a certain post
     if request.method == 'POST' and 'commentBtn' in request.POST:
         text = request.POST['comment']
         postID = request.POST['postID']
@@ -81,6 +87,7 @@ def enter_room(request, room_id):
         Comments.create(text, request.user, parentPost, room )
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
+    # create a like if doesn't exit for user, else toggle like
     if request.method == 'POST' and 'likeBtn' in request.POST:
         postID = request.POST['postID']
         post = get_object_or_404(Posts, pk=postID)
@@ -94,7 +101,7 @@ def enter_room(request, room_id):
                 like.toggle_active()
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
                
-
+    # delete post if user is author
     if request.method == 'POST' and 'removePostBtn' in request.POST:
         postID = request.POST['postID']
         post = get_object_or_404(Posts, pk=postID)
@@ -102,6 +109,7 @@ def enter_room(request, room_id):
             post.delete()
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
+    # remove comment if user is author
     if request.method == 'POST' and 'removeCommentBtn' in request.POST:
         commentID = request.POST['commentID']
         comment = get_object_or_404(Comments, pk=commentID)
@@ -109,7 +117,7 @@ def enter_room(request, room_id):
             comment.delete()
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
     
-    
+    # create a like for a comment
     if request.method == 'POST' and 'commentLikeBtn' in request.POST:
         commentID = request.POST['commentID']
         comment = get_object_or_404(Comments, pk=commentID)
@@ -123,7 +131,7 @@ def enter_room(request, room_id):
                 like.toggle_active()
         return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
                
-      
+    # get number of active likes for posts and comments
     postLikes = []
     commentLikes = []
 

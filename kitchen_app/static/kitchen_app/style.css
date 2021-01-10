@@ -8,6 +8,12 @@ body{
 .sidebar{
     height: 100vh;
 }
+
+main{
+    height: 100vh;
+    overflow: scroll;
+}
+
 .card-deck{
     width:350px;
     padding:20px;
@@ -20,3 +26,4 @@ body{
     margin-bottom:25px;
     overflow: scroll;
 }
+

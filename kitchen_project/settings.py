@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_rq',
     'login_app',
     'kitchen_app',
     'channels',
@@ -138,15 +139,36 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
 EXCLUDED_URLS = (
     'api/images/',
     'api/id/<int:id>/',
+    'admin/',
     'admin/login/',
     'accounts/login/',
     'accounts/logout/',
     'accounts/sign_up/',   
+    'accounts/password_reset/',  
+    'accounts/password_reset_secret/<str:secret>/',  
+    'accounts/password_reset_form/',   
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+RQ_QUEUES = {
+   'default': {
+      'HOST': 'localhost',
+      'PORT': '6379',
+      'DB': 0,
+      'DEFAULT_TIMEOUT': 360,
+   }
+}
+
+# EMAIL SETTINGS
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'sarigucki@gmail.com'
+EMAIL_HOST_PASSWORD = 'MYPASSWORD'
