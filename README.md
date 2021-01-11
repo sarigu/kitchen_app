@@ -14,9 +14,11 @@ Each kitchen can create a room for their kitchen in the app. The room has (multi
 
 Start the virtual environment
 
+## Install packages
+
 Navigate to the projects folder
 
-Install packages
+Install packages in project root
 
 `pip install -r requirements.txt`
 
