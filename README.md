@@ -38,11 +38,15 @@ Run Redis Server:
 
 ## Run the Django RQ Worker
 
+Open another terminal window
+
 `python manage.py rqworker`
 
 Note: the virtual environment needs to be active
 
 ## Run project
+
+Open another terminal window (active venv)
 
 `python manage.py runserver`
 
