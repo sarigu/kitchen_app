@@ -147,9 +147,8 @@ EXCLUDED_URLS = (
     'accounts/login/',
     'accounts/logout/',
     'accounts/sign_up/',   
-    'accounts/password_reset/',  
-    'accounts/password_reset_secret/<str:secret>/',  
-    'accounts/password_reset_form/',   
+    'accounts/request_password_reset/',  
+    'accounts/set_new_password/',  
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -171,4 +170,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp-relay.sendinblue.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'sarigucki@gmail.com'
-EMAIL_HOST_PASSWORD = 'MYPASSWORD'
+EMAIL_HOST_PASSWORD = 'MqFtvLHkhNJXw2c6'

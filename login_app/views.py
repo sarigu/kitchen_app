@@ -3,7 +3,7 @@ from django.contrib.auth.models import User #user object comes with attributes l
 from django.contrib.auth import authenticate, login as dj_login, logout as dj_logout
 from django.http import HttpResponseRedirect
 from django.db import IntegrityError
-from . import models
+from .models import PasswordResetRequest
 import django_rq
 from . messaging import email_message
 
@@ -42,41 +42,49 @@ def sign_up(request):
    return render(request, 'login_app/sign_up.html', context)
 
 
-def password_reset(request):
+def request_password_reset(request):
    context = {}
+   if request.method == "POST":
+      user_email = request.POST['email']
+      user = None
 
+      if user_email:
+            try:
+               user = User.objects.get(email=user_email)
+            except:
+               context = {'message': 'Opps. Something went wrong'}
+   
+      if user:
+            prr = PasswordResetRequest()
+            prr.user = user
+            prr.save()
+            django_rq.enqueue(email_message, {
+               'token' : prr.token,
+               'email' : prr.user.email,
+            })
+            return HttpResponseRedirect(reverse('login_app:login'))
+
+   return render(request, 'login_app/password_reset_request.html', context)
+
+def set_new_password(request):
+   print("new password")
+   context ={}
    if request.method == "POST":
       email = request.POST['email']
+      password = request.POST['password']
+      confirm_password = request.POST['confirm_password']
+      token = request.POST['token']
+
       user = User.objects.get(email=email)
-      reset_request = models.PasswordResetRequest()
-      reset_request.user = user
-      reset_request.save()
-      url = reverse('login_app:password_reset_secret', args=[f'{reset_request.secret}'])
-      url = f'{request.scheme}://{request.META["HTTP_HOST"]}{url}'
-      print(url)
-      context = {'message': 'Please click the link in the email we sent to you.'}
+      reset_request = PasswordResetRequest.objects.get(user=user,token=token)
+
+      if password == confirm_password:
+         user.set_password(password)
+         user.save()
+         reset_request.save()
+         return HttpResponseRedirect(reverse('login_app:login'))
+      else:
+         context = {'message': 'Opps. Something went wrong'}
 
    return render(request, 'login_app/password_reset.html', context)
-
-
-def password_reset_secret(request, secret):
-   context = {'secret': secret}
-   return render(request, 'login_app/password_reset_form.html', context)
-
-
-def password_reset_form(request):
-   email = request.POST['email']
-   password = request.POST['password']
-   confirm_password = request.POST['confirm_password']
-   secret = request.POST['secret']
-
-   user = User.objects.get(email=email)
-   reset_request = models.PasswordResetRequest.objects.get(user=user,secret=secret)
-   if password == confirm_password:
-      user.set_password(password)
-      user.save()
-      reset_request.save()
-      return HttpResponseRedirect(reverse('login_app:login'))
-   context = {'error': 'Something went wrong'}
-   return render(request, 'login_app/password_reset_form.html', context)
 
