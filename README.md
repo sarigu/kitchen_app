@@ -37,7 +37,7 @@ Go to: `localhost:8000`
 username: admin <br />
 password: admin
 
-## Login to admin pannel
+## Login to admin panel
 
 Go to: `localhost:8000/admin`
 
