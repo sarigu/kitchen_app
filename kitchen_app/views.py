@@ -424,7 +424,7 @@ def admin_view(request, room_id):
         data = "hello i am assigning a task" + task.task
         # Trigger message sent to group
         async_to_sync(channel_layer.group_send)(
-            str(current_user.pk),  # Channel Name, Should always be string
+            str(user.pk),  # Channel Name, Should always be string
             {
                 "type": "notify",   # Custom Function written in the consumers.py
                 "message": data,
