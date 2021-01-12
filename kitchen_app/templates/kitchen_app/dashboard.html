@@ -6,8 +6,12 @@
 <div>
     <div style="width:100%; height:220px; background-image: url('  {{ room.backgroundImage }}'); margin-bottom:40px">
     </div>
-
     <h1>Hi you entered the dashboard {{ room.name }}</h1>
+    <hr>
+    <form action="{% url 'kitchen_app:test_page' room.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Test Notifications" class="btn btn-success">
+    </form>
     <hr>
     <div>
         <h2>Your tasks</h2>
@@ -226,4 +230,5 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+
 {% endblock %}
