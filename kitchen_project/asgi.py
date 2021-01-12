@@ -14,11 +14,9 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 import chat.routing
 import kitchen_app.routing
-from django.urls import path
 from channels.routing import ProtocolTypeRouter, URLRouter, ChannelNameRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator, OriginValidator
-from kitchen_app.consumers import NotificationConsumer 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "kitchen_project.settings")
 
@@ -36,9 +34,7 @@ application = ProtocolTypeRouter({
     'websocket': AllowedHostsOriginValidator(  # Only allow socket connections from the Allowed hosts in the settings.py file
         AuthMiddlewareStack(  # Session Authentication, required to use if we want to access the user details in the consumer 
             URLRouter(
-                [
-                    path("notifications/", NotificationConsumer.as_asgi()),    # Url path for connecting to the websocket to send notifications.
-                ]
+                kitchen_app.routing.websocket_urlpatterns,  
             )
         ),
     ),
