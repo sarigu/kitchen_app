@@ -4,9 +4,6 @@
 
 {% block content %}
 <div>
-
-
-    <div id="dialog" title="Dialog Title">hello</div>
     <button onclick="test()">TEST BUTTON</button>
 
 </div>
@@ -35,9 +32,8 @@
         console.log('message', e)
         const data = JSON.parse(e.data)
         console.log(data.message)
-        let dialog = document.querySelector("#dialog")
-        dialog.style.color = "blue"
-        dialog.innerHTML = data.message
+
+        alert("notification: " + data.message)
 
     }
 
