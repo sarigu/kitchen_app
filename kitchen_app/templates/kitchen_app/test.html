@@ -1,0 +1,67 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div>
+
+
+    <div id="dialog" title="Dialog Title">hello</div>
+    <button onclick="test()">TEST BUTTON</button>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+<script>
+    var loc = window.location
+    var wsStart = "ws://"
+    if (loc.protocol == "https:") {
+        wsStart = "wss://"
+    }
+    var webSocketEndpoint = wsStart + loc.host + '/notifications/'  // ws : wss   // Websocket URL, Same on as mentioned in the routing.py
+    console.log(webSocketEndpoint);
+
+    var socket = new WebSocket(webSocketEndpoint) // Creating a new Web Socket Connection
+
+    // Socket On receive message Functionality
+    socket.onmessage = function (e) {
+        console.log('message', e)
+        const data = JSON.parse(e.data)
+        console.log(data.message)
+        let dialog = document.querySelector("#dialog")
+        dialog.style.color = "blue"
+        dialog.innerHTML = data.message
+
+    }
+
+    // Socket Connet Functionality
+    socket.onopen = function (e) {
+        console.log('open', e)
+    }
+
+    // Socket Error Functionality
+    socket.onerror = function (e) {
+        console.log('error', e)
+    }
+
+    // Socket close Functionality
+    socket.onclose = function (e) {
+        console.log('closed', e)
+    }
+
+    function test() {
+        console.log("helloo??");
+        socket.send(JSON.stringify({
+            'message': "test message",
+        }));
+    }
+</script>
+
+{% endblock %}

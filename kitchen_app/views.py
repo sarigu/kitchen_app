@@ -9,6 +9,8 @@ from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from .utils import is_room_admin
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 def index(request):
     #get all rooms the user is member of
@@ -781,4 +783,12 @@ def admin_edit_room (request, room_id):
         return HttpResponseRedirect(reverse('kitchen_app:admin_edit_room', args=(room.id,)))
 
     return render(request, 'kitchen_app/admin_room_info.html', context)
+
+
+def test_page(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    context={ 
+        'room': room,
+    }
+    return render(request, 'kitchen_app/test.html', context)
 

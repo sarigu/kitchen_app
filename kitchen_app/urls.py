@@ -34,4 +34,5 @@ urlpatterns = [
    path('enter_chat/<int:room_id>/', views.enter_chat, name='enter_chat'),
    path('leave_room/<int:room_id>/', views.leave_room, name='leave_room'),
    path('admin_edit_room/<int:room_id>/', views.admin_edit_room, name='admin_edit_room'),
+   path('test_page/<int:room_id>/', views.test_page, name='test_page'),
 ]
