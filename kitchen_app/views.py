@@ -150,19 +150,6 @@ def enter_room(request, room_id):
         commentLike = {'numberOfLikes' : len(likes), 'comment': comment }
         commentLikes.append(commentLike)
 
-    # Django Channels Notifications Test
-    current_user = request.user
-    channel_layer = get_channel_layer()
-    data = "hello i am in dashboard"
-    # Trigger message sent to group
-    async_to_sync(channel_layer.group_send)(
-        str(current_user.pk),  # Channel Name, Should always be string
-        {
-            "type": "notify",   # Custom Function written in the consumers.py
-            "message": data,
-        },
-    )  
-
 
     context = {
         'room': room,
@@ -430,6 +417,20 @@ def admin_view(request, room_id):
         task = get_object_or_404(Tasks, pk=taskID) 
         user = get_object_or_404(User, username=assignedUser) 
         task.setUser(user) 
+
+          # Django Channels Notifications Test
+        current_user = request.user
+        channel_layer = get_channel_layer()
+        data = "hello i am assigning a task" + task.task
+        # Trigger message sent to group
+        async_to_sync(channel_layer.group_send)(
+            str(current_user.pk),  # Channel Name, Should always be string
+            {
+                "type": "notify",   # Custom Function written in the consumers.py
+                "message": data,
+            },
+        )  
+
         return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
 
     if request.method == 'POST' and 'addTaskBtn' in request.POST:
