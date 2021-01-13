@@ -6,7 +6,6 @@
 
 <h1>Weekly Cleaning Tasks</h1>
 {% if listTasks %}
-
 <ul class="list-group">
     {% for listTask in listTasks %}
     <form class="list-group-item" action="{% url 'kitchen_app:admin_cleaning_tasks' room.pk %}" method="POST">

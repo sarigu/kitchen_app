@@ -574,10 +574,19 @@ def admin_completed_tasks(request, room_id):
     assert is_room_admin(request.user, room_id), 'Member routed to member view.'
     room = get_object_or_404(Room, pk=room_id)
     completedTasks = Tasks.objects.filter(room=room_id).filter(status=True)
+
     context={  
         'room': room,   
         'completedTasks': completedTasks, 
     }
+
+        #remove completed task
+    if request.method == 'POST':
+        taskID = request.POST['taskID']
+        task = get_object_or_404(Tasks, pk=taskID)
+        task.delete()
+        return HttpResponseRedirect(reverse('kitchen_app:admin_completed_tasks', args=(room.id,)))
+
     return render(request, 'kitchen_app/admin_completed_tasks.html', context)
 
 

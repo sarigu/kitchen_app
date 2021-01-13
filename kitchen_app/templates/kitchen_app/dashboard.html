@@ -174,7 +174,7 @@
         <!-- Make a post -->
         <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
             {% csrf_token %}
-            <textarea type="text" name="post" rows="5"> Post </textarea><br>
+            <textarea type="text" name="post" rows="5" placeholder="Post "></textarea><br>
             <input class="btn btn-primary" name="addPostBtn" type="submit" value="Add a post">
         </form>
     </div>

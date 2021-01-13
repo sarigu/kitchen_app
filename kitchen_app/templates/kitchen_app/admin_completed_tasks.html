@@ -10,7 +10,7 @@
 <h2>Other tasks</h2>
 {% for task in completedTasks %}
 {% if task.type == "anything" %}
-<form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
+<form class="list-group-item" action="{% url 'kitchen_app:admin_completed_tasks' room.pk %}" method="POST">
     {% csrf_token %}
     <input type="hidden" name="taskID" value="{{ task.pk }}">
     <div>{{ task.task }} </div>
@@ -23,7 +23,7 @@
 <h2>Weekly Cleaning</h2>
 {% for task in completedTasks %}
 {% if task.type == "clean" %}
-<form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
+<form class="list-group-item" action="{% url 'kitchen_app:admin_completed_tasks' room.pk %}" method="POST">
     {% csrf_token %}
     <input type="hidden" name="taskID" value="{{ task.pk }}">
     <div>{{ task.task }} </div>
@@ -37,7 +37,7 @@
 <h2>Kitchen</h2>
 {% for task in completedTasks %}
 {% if task.type == "kitchen" %}
-<form class="list-group-item" action="{% url 'kitchen_app:completed_task' room.pk %}" method="POST">
+<form class="list-group-item" action="{% url 'kitchen_app:admin_completed_tasks' room.pk %}" method="POST">
     {% csrf_token %}
     <input type="hidden" name="taskID" value="{{ task.pk }}">
     <div>{{ task.task }} </div>
