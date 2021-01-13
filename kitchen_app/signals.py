@@ -6,7 +6,9 @@ from . models import UserProfile, Subtasks, Tasks, RoomMembers, Chat, ChatMember
 
 @receiver(post_save, sender=User, dispatch_uid="create_user_profile")
 def create_user_profile(sender, instance, **kwargs):
+   print("signal from useer")
    if not UserProfile.objects.filter(user=instance).exists():
+      print("create profile")
       user_profile = UserProfile()
       user_profile.user = instance
       user_profile.save()

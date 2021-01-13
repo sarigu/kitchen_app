@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from secrets import token_urlsafe
 
-
 class PasswordResetRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=43, default=token_urlsafe)

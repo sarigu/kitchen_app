@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from .models import PasswordResetRequest
 import django_rq
-from . messaging import email_password_reset, email_account_confirmation
+from . messaging import email_password_reset
 
 # Create your views here.
 def login(request):
@@ -34,15 +34,13 @@ def sign_up(request):
       if password == confirm_password:
          try:
             User.objects.create_user(username, email, password)
-            django_rq.enqueue(email_account_confirmation, {
-               'email': email,
-               'username': username,
-            })
             return HttpResponseRedirect(reverse('login_app:login'))
          except IntegrityError as e:
-            context = {'error': 'Username exists try a different name.'}
+            context = {'error': 'Could not create account. Username exists try a different name.'}
+
       else:
          context = {'error': 'Passwords do not match.'}
+
    return render(request, 'login_app/sign_up.html', context)
 
 
@@ -71,7 +69,6 @@ def request_password_reset(request):
    return render(request, 'login_app/password_reset_request.html', context)
 
 def set_new_password(request):
-   print("new password")
    context ={}
    if request.method == "POST":
       email = request.POST['email']

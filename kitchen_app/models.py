@@ -24,11 +24,11 @@ type_of_like = (
 )
 
 class UserProfile(models.Model):
-   user = models.OneToOneField(User, on_delete=models.CASCADE)
-   phone = models.CharField(max_length=25, blank=True)
-
-   def __str__(self):
-      return f"{self.user} - {self.user.email} -  {self.user.first_name} -  {self.user.last_name} - {self.phone}"
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=25, blank=True)
+    
+    def __str__(self):
+        return f"{self.user} - {self.user.email} -  {self.user.first_name} -  {self.user.last_name} - {self.phone}"
 
 
 class Room (models.Model):
