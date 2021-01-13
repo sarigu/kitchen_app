@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'channels',
     'chat',
     'api',
-    'images',
     'rest_framework',
 ]
 

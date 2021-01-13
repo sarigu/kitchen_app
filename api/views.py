@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
-from .custom_renderers import JPEGRenderer, PGNRenderer
+from .custom_renderers import PGNRenderer
 from rest_framework.response import Response
-from images.models import Images
+from .models import Images
 
 
 # Create your views here.
