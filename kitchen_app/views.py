@@ -234,9 +234,9 @@ def edit_profile(request, room_id):
             userDetails.phone = request.POST['phone']
             userDetails.save()
             
-        return HttpResponseRedirect(reverse('kitchen_app:view_profile', args=(room.id,)))
+        return HttpResponseRedirect(reverse('kitchen_app:profile', args=(room.id,)))
    
-    return render(request, 'kitchen_app/edit-profile.html', context)
+    return render(request, 'kitchen_app/edit_profile.html', context)
 
 
 def kitchen_fund(request, room_id):
@@ -732,7 +732,7 @@ def view_images(request, room_id):
     assert is_room_admin(request.user, room_id), 'Member routed to member view.'
     room = get_object_or_404(Room, pk=room_id)
     context={ 'room': room,}
-    return render(request, 'kitchen_app/image_choices.html', context)
+    return render(request, 'kitchen_app/image_options.html', context)
 
 
 def set_new_bg_image(request, room_id):

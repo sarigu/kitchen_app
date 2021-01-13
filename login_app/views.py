@@ -7,7 +7,7 @@ from .models import PasswordResetRequest
 import django_rq
 from . messaging import email_password_reset
 
-# Create your views here.
+
 def login(request):
    if request.method == 'POST':
       username = request.POST['username']
@@ -27,9 +27,7 @@ def logout(request):
 
 
 def sign_up(request):
-
    context = {}
-
    if request.method == 'POST':
       username = request.POST['username']
       password = request.POST['password']
