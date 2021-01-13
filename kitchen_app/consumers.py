@@ -2,10 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 
-
-
 class NotificationConsumer(AsyncWebsocketConsumer):
-
     # Function to connect to the websocket
     async def connect(self):
         print(self)
@@ -20,8 +17,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 self.group_name,
                 self.channel_name
             )
-
-
         await self.accept()
 
     # Function to disconnet the Socket
@@ -33,7 +28,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-
         # Send message to room group
         await self.channel_layer.group_send(
             self.group_name,
@@ -42,7 +36,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 'message': message
             }
         )
-
 
     # Custom Notify Function which can be called from Views or api to send message to the frontend
     async def notify(self, event):

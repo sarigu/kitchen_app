@@ -1,10 +1,8 @@
 from django.urls import path
-from channels.routing import ProtocolTypeRouter, URLRouter, ChannelNameRouter
-from channels.auth import AuthMiddlewareStack
-from channels.security.websocket import AllowedHostsOriginValidator, OriginValidator
-
-from . import consumers  # Importing notification Consumer from consumers.py
+from . import consumers  
+from chat.consumers import ChatConsumer
 
 websocket_urlpatterns = [
     path('notifications/', consumers.NotificationConsumer()),
+    path('ws/chat/<str:room_name>/', ChatConsumer().as_asgi()),
 ]
