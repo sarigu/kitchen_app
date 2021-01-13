@@ -1,0 +1,25 @@
+body{
+    width:100%;
+    padding:100px;
+}
+
+h1{
+    text-align: center;
+}
+
+.links{
+    text-align: center;
+}
+
+.links a {
+    padding:10px;
+}
+
+form{
+    width:40%;
+    margin: auto;
+}
+
+form input{
+    margin-bottom:20px;
+}

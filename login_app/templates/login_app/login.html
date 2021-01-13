@@ -1,29 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'login_app/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Login</title>
-</head>
+{% block title %}Login{% endblock %}
 
-<body>
-    <h1>Login</h1>
+{% block content %}
+<h1>Login</h1>
+<form action="{% url 'login_app:login' %}" method="POST" class="form-signin">
+    {% csrf_token %}
+    <input required class="form-control" type="text" name="username" placeholder="username">
+    <input required class="form-control" type="password" name="password" placeholder="Password">
+    <input type="submit" value="Login" class="btn btn-lg btn-primary btn-block">
+</form>
+<div class="links">
     <a href="{% url 'login_app:request_password_reset' %}">Reset Password</a>
     <a href="{% url 'login_app:sign_up' %}">Create Account</a>
-    <hr>
-    <form action="{% url 'login_app:login' %}" method="POST" class="form-signin">
-        {% csrf_token %}
-        <input required class="form-control" type="text" name="username" placeholder="username">
-        <br />
-        <input required class="form-control" type="password" name="password" placeholder="Password">
-        <br />
-        <input type="submit" value="Login" class="btn btn-lg btn-primary btn-block">
-    </form>
-    <hr>
-    {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
-</body>
-
-</html>
+</div>
+{% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
+{% endblock %}
