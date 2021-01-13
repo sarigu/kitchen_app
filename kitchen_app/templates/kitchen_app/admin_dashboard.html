@@ -41,9 +41,10 @@
             {% for event in events %}
             <div class="card-deck text-center">
                 <div class="card ">
-                    <div class="card-header" {% if event.type == "kitchenMeeting" %} style="background-color: pink"
-                        {% elif event.type == "kitchenCleaning" %} style="background-color: paleturquoise" {% else %}
-                        style="background-color: lightgreen" {% endif %}>
+                    <div class="card-header" {% if event.type == "kitchenMeeting" %}
+                        style="background-color: pink; color:white;" {% elif event.type == "kitchenCleaning" %}
+                        style="background-color: rgb(140, 214, 214); color:white;" {% else %}
+                        style="background-color: rgb(129, 206, 129); color:white;" {% endif %}>
                         <h4 class="my-0 font-weight-normal">{{event.title}}</h4>
                     </div>
                     <div class="card-body">
@@ -94,7 +95,6 @@
         </form>
         {% endfor %}
         {% endif %}
-        <hr>
         <form class="list-group-item" action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
             {% csrf_token %}
             <input type="text" name="task" placeholder="task">
@@ -114,41 +114,42 @@
                         <h4 class="mb-0"> {{ post.text }}</h4>
                         <p class="card-text mb-auto">by {{ post.user }}</p>
                         <p class="card-text mb-auto">on the {{ post.created_at }}</p>
-                        {% if postLikes %}
-                        {% for like in postLikes %}
-                        {% if like.post.pk == post.pk %}
-                        <span class="badge badge-primary">Likes: {{ like.numberOfLikes }}
-                        </span>
-                        {% endif %}
-                        {% endfor %}
-                        {% endif %}
+                        <div class="post-assets">
+                            {% if postLikes %}
+                            {% for like in postLikes %}
+                            {% if like.post.pk == post.pk %}
+                            <span class="badge badge-primary">Likes: {{ like.numberOfLikes }}
+                            </span>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
 
-                        <div id="comment-section + {{ post.pk }}" style="display: none">
+                            <div id="comment-section + {{ post.pk }}" style="display: none">
+                                <form action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="postID" value="{{ post.pk }}">
+                                    <textarea name="comment" id="comment" rows="4"></textarea>
+                                    <input class="btn btn-dark" name="commentBtn" type="submit" value="Comment">
+
+                                </form>
+                                <button class="btn btn-dark btn-sm"
+                                    onClick="document.getElementById('comment-section + {{ post.pk }}').style.display = 'none';">Close</button>
+                            </div>
+                            <button class="btn btn-outline-primary"
+                                onClick="document.getElementById('comment-section + {{ post.pk }}').style.display = 'block';">Comment</button>
                             <form action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="postID" value="{{ post.pk }}">
-                                <textarea name="comment" id="comment" rows="4"></textarea>
-                                <input class="btn btn-dark" name="commentBtn" type="submit" value="Comment">
+                                <button class="btn btn-light btn-sm" name="likeBtn">Like</button>
 
+                                <button class="btn btn-danger btn-sm" name="removePostBtn">Remove</button>
                             </form>
-                            <button class="btn btn-dark btn-sm"
-                                onClick="document.getElementById('comment-section + {{ post.pk }}').style.display = 'none';">Close</button>
                         </div>
-                        <button class="btn btn-outline-primary"
-                            onClick="document.getElementById('comment-section + {{ post.pk }}').style.display = 'block';">Comment</button>
-                        <form action="{% url 'kitchen_app:enter_room' room.pk %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="postID" value="{{ post.pk }}">
-                            <button class="btn btn-light btn-sm" name="likeBtn">Like</button>
-
-                            <button class="btn btn-danger btn-sm" name="removePostBtn">Remove</button>
-
-                        </form>
                         {% if comments %}
                         {% for comment in comments %}
                         {% if comment.parent.pk == post.pk %}
                         <div
-                            style="background-color: rgb(226, 226, 226); border-radius: 10px; padding:10px; margin:10px;">
+                            style="background-color: rgb(236, 236, 236); border-radius: 10px; padding:10px; margin:10px;">
                             <h6>{{ comment.text }}</h6>
                             <p>by {{ comment.user }}</p>
                             {% if commentLikes %}

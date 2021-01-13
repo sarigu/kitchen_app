@@ -18,6 +18,23 @@ main{
 h1,h2{
     margin-bottom:20px;
 }
+
+hr{
+    margin:40px 0 40px 0;
+}
+
+.nav-link{
+    color: rgba(239, 87, 45, 0.76) !important;
+}
+.nav-btn{
+    background-color: rgba(239, 87, 45, 0.76) !important;
+    color:white;
+}
+
+.logout-link{
+    color:white !important;
+}
+
 .card-deck{
     width:350px;
     padding:20px;
@@ -33,5 +50,24 @@ h1,h2{
 
 .list-group{
     margin-bottom:20px !important;
+}
+
+.like-span{
+    width:140px;
+}
+
+.post-assets{
+    display: flex;
+    flex-direction: column;
+    padding:10px 0;
+}
+
+.post-assets * {
+    margin:5px;
+}
+
+span{
+    margin-bottom: 10px;
+    padding:10px !important;
 }
 
