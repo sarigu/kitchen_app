@@ -174,8 +174,10 @@ def members(request, room_id):
         chatToID = request.POST['chatToID']
         chatToUser = get_object_or_404(User, pk=chatToID)
 
+        # check if clicked on person is not user
         if chatToUser != request.user:
             chatFrom = ChatMembers.objects.filter(room=room).filter(user = request.user)
+            #c heck if user has a chat with the user he wants to chat with
             for chat in chatFrom:
                 checkForChat = ChatMembers.objects.filter(room=room).filter(user = chatToUser).filter(chat=chat.chat.pk).exists()
                 if checkForChat:
@@ -220,7 +222,7 @@ def edit_profile(request, room_id):
         'members': members,
     }
 
-
+    # overwrite profile information
     if request.method == 'POST':
         user.username = request.POST['username']
         user.email = request.POST['email']
@@ -252,11 +254,13 @@ def kitchen_fund(request, room_id):
         'donePayments': donePayments,
     }
 
+    # create task for items to purchase
     if request.method == 'POST' and 'addBtn' in request.POST:
         newTask = request.POST['task']
         Tasks.create(None, room, newTask, "kitchen", None)
         return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
     
+    # create a task for money back request
     if request.method == 'POST' and 'requestBtn' in request.POST:
         amount = request.POST['amount']
         purchase = request.POST['purchase'] 
