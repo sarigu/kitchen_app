@@ -148,7 +148,7 @@ EXCLUDED_URLS = (
     'accounts/logout/',
     'accounts/sign_up/',   
     'accounts/request_password_reset/',  
-    'accounts/set_new_password/',  
+    'accounts/set_new_password/', 
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -36,9 +36,11 @@ def sign_up(request):
             User.objects.create_user(username, email, password)
             return HttpResponseRedirect(reverse('login_app:login'))
          except IntegrityError as e:
-            context = {'error': 'Username exists try a different name.'}
+            context = {'error': 'Could not create account. Username exists try a different name.'}
+
       else:
          context = {'error': 'Passwords do not match.'}
+
    return render(request, 'login_app/sign_up.html', context)
 
 
@@ -67,7 +69,6 @@ def request_password_reset(request):
    return render(request, 'login_app/password_reset_request.html', context)
 
 def set_new_password(request):
-   print("new password")
    context ={}
    if request.method == "POST":
       email = request.POST['email']

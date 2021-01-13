@@ -9,6 +9,8 @@ from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from .utils import is_room_admin
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 def index(request):
     #get all rooms the user is member of
@@ -172,8 +174,10 @@ def members(request, room_id):
         chatToID = request.POST['chatToID']
         chatToUser = get_object_or_404(User, pk=chatToID)
 
+        # check if clicked on person is not user
         if chatToUser != request.user:
             chatFrom = ChatMembers.objects.filter(room=room).filter(user = request.user)
+            #c heck if user has a chat with the user he wants to chat with
             for chat in chatFrom:
                 checkForChat = ChatMembers.objects.filter(room=room).filter(user = chatToUser).filter(chat=chat.chat.pk).exists()
                 if checkForChat:
@@ -218,7 +222,7 @@ def edit_profile(request, room_id):
         'members': members,
     }
 
-
+    # overwrite profile information
     if request.method == 'POST':
         user.username = request.POST['username']
         user.email = request.POST['email']
@@ -250,11 +254,13 @@ def kitchen_fund(request, room_id):
         'donePayments': donePayments,
     }
 
+    # create task for items to purchase
     if request.method == 'POST' and 'addBtn' in request.POST:
         newTask = request.POST['task']
         Tasks.create(None, room, newTask, "kitchen", None)
         return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
     
+    # create a task for money back request
     if request.method == 'POST' and 'requestBtn' in request.POST:
         amount = request.POST['amount']
         purchase = request.POST['purchase'] 
@@ -415,6 +421,20 @@ def admin_view(request, room_id):
         task = get_object_or_404(Tasks, pk=taskID) 
         user = get_object_or_404(User, username=assignedUser) 
         task.setUser(user) 
+
+          # Django Channels Notifications Test
+        current_user = request.user
+        channel_layer = get_channel_layer()
+        data = "hello i am assigning a task" + task.task
+        # Trigger message sent to group
+        async_to_sync(channel_layer.group_send)(
+            str(user.pk),  # Channel Name, Should always be string
+            {
+                "type": "notify",   # Custom Function written in the consumers.py
+                "message": data,
+            },
+        )  
+
         return HttpResponseRedirect(reverse('kitchen_app:admin_view', args=(room.id,)))
 
     if request.method == 'POST' and 'addTaskBtn' in request.POST:
@@ -781,4 +801,12 @@ def admin_edit_room (request, room_id):
         return HttpResponseRedirect(reverse('kitchen_app:admin_edit_room', args=(room.id,)))
 
     return render(request, 'kitchen_app/admin_room_info.html', context)
+
+
+def test_page(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    context={ 
+        'room': room,
+    }
+    return render(request, 'kitchen_app/test.html', context)
 
