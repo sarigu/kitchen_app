@@ -7,7 +7,7 @@
     <h1>Weekly Cleaning</h1>
     {% if subtasks %}
     {% for task in subtasks %}
-    <form class="list-group-item" action="{% url 'kitchen_app:weekly_cleaning' room.pk %}" method="POST">
+    <form class="list-group-item" action="{% url 'kitchen_app:weekly_cleaning_list' room.pk %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="taskID" value="{{ task.pk }}">
         <div>{{ task.taskDescription }}</div>

@@ -17,7 +17,7 @@
             <input type="hidden" name="taskID" value="{{ task.pk }}">
             <div>{{ task.task }} </div>
             {% if task.type == "clean" %}
-            <a href="{% url 'kitchen_app:weekly_cleaning' room.pk %}">Cleaning link</a>
+            <a href="{% url 'kitchen_app:weekly_cleaning_list' room.pk %}">Cleaning link</a>
             {% else %}
             <input type="submit" value="Done" name="doneBtn" class="btn btn-success">
             {% endif %}
@@ -28,7 +28,7 @@
         {% endif %}
     </div>
     <hr>
-    <a href="{% url 'kitchen_app:completed_task' room.pk %}">See your completed tasks</a>
+    <a href="{% url 'kitchen_app:completed_tasks' room.pk %}">See your completed tasks</a>
     <hr>
     <div>
         <h2>Upcoming events</h2>

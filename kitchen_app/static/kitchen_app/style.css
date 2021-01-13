@@ -12,8 +12,12 @@ body{
 main{
     height: 100vh;
     overflow: scroll;
+    padding:20px;
 }
 
+h1,h2{
+    margin-bottom:20px;
+}
 .card-deck{
     width:350px;
     padding:20px;
@@ -22,8 +26,12 @@ main{
 /* Weekly Cleaning Schedule */
 
 #week-overview{
-    height:400px;
+    height:90%;
     margin-bottom:25px;
     overflow: scroll;
+}
+
+.list-group{
+    margin-bottom:20px !important;
 }
 

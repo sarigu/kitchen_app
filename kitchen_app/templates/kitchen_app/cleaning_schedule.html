@@ -9,7 +9,6 @@
     {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
     <div id="week-overview">
         {% if weeks %}
-
         <ul class="list-group">
             {% for week in weeks %}
             <li class="list-group-item d-inline-flex">
@@ -32,19 +31,14 @@
                     <h2>User</h2>
                     {{ takenWeek.user }}
                 </div>
-
                 {% endif %}
                 {% endfor %}
                 {% endif %}
             </li>
             {% endfor %}
         </ul>
-
         {% endif %}
-
     </div>
-
-
 </div>
 {% endblock %}
 {% block footer %}
@@ -53,7 +47,5 @@
     for (let i = 0; i < elem.length; i++) {
         elem[i].parentNode.style.backgroundColor = "lightgreen";
     }
-
-
 </script>
 {% endblock %}

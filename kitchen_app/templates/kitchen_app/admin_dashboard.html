@@ -6,17 +6,20 @@
 <div>
     <div style="width:100%; height:220px; background-image: url(  '{{ room.backgroundImage }}'); margin-bottom:40px">
     </div>
-    <h1>Hi you entered the dashboard {{ room.name }} in edit mode</h1>
+    <h1>Hi, you entered the dashboard {{ room.name }} in edit mode &#128221; </h1>
     <hr>
     <a href="{% url 'kitchen_app:view_images' room.pk %}">Edit image</a>
+    <hr>
     <div>
-        <h2>Assigned Tasks</h2>
+        <h2>Overview of assigned tasks</h2>
         {% if assignedTasks %}
         {% for task in assignedTasks %}
         <form class="list-group-item" action="{% url 'kitchen_app:admin_view' room.pk %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="taskID" value="{{ task.pk }}">
-            <div>{{ task.task }} </div>
+            <div class="font-weight-bold">
+                {{ task.task }}
+            </div>
             <div> Assigned to {{ task.user }} </div>
             {% if task.deadline %}
             <div> Deadline {{ task.deadline }} </div>
@@ -53,8 +56,8 @@
                             class="btn btn-lg btn-block btn-outline-primary">
                             See event
                         </a>
-                        <form class="list-group-item" action="{% url 'kitchen_app:delete_event' room.pk %}"
-                            method="POST">
+                        <form action="{% url 'kitchen_app:delete_event' room.pk %}" method="POST"
+                            style="margin-top: 20px;">
                             {% csrf_token %}
                             <input type="hidden" name="eventID" value="{{ event.pk }}">
                             <input type="submit" value="Delete event" name="deleteBtn" class="btn btn-danger">
@@ -67,9 +70,7 @@
             {% else %}
             <div>No events</div>
             {% endif %}
-
         </div>
-
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Create an event
         </button>
@@ -116,7 +117,8 @@
                         {% if postLikes %}
                         {% for like in postLikes %}
                         {% if like.post.pk == post.pk %}
-                        <span class="badge badge-primary">Likes: {{ like.numberOfLikes }} </span>
+                        <span class="badge badge-primary">Likes: {{ like.numberOfLikes }}
+                        </span>
                         {% endif %}
                         {% endfor %}
                         {% endif %}
@@ -166,10 +168,7 @@
                         {% endif %}
                         {% endfor %}
                         {% endif %}
-
-
                     </div>
-
                 </div>
             </div>
             {% endfor %}

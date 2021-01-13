@@ -34,7 +34,6 @@ def create_room(request):
             newRoom = form.save()
             if(newRoom):
                 RoomMembers.create(request.user, newRoom, "admin")
-                
     return HttpResponseRedirect(reverse('kitchen_app:index'))
 
 
@@ -47,91 +46,92 @@ def enter_room(request, room_id):
     posts = Posts.objects.filter(room=room_id)
     comments = Comments.objects.filter(room=room_id)
 
-    # set user for a chosen task
-    if request.method == 'POST' and 'takeTaskBtn' in request.POST:
-        taskID = request.POST['taskID']
-        task = get_object_or_404(Tasks, pk=taskID)
-        task.setUser(request.user)
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+    if request.method == 'POST':
+        # set user for a chosen task
+        if 'takeTaskBtn' in request.POST:
+            taskID = request.POST['taskID']
+            task = get_object_or_404(Tasks, pk=taskID)
+            task.setUser(request.user)
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
-    # create new task
-    if request.method == 'POST' and 'addTaskBtn' in request.POST:
-        newTask = request.POST['task']
-        Tasks.create(None, room, newTask, "anything", None)
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # create new task
+        if 'addTaskBtn' in request.POST:
+            newTask = request.POST['task']
+            Tasks.create(None, room, newTask, "anything", None)
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
-    # set task status to true/mark as done
-    if request.method == 'POST' and 'doneBtn' in request.POST:
-        taskID = request.POST['taskID']
-        task = get_object_or_404(Tasks, pk=taskID)
-        task.status = True
-        task.save()
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # set task status to true/mark as done
+        if 'doneBtn' in request.POST:
+            taskID = request.POST['taskID']
+            task = get_object_or_404(Tasks, pk=taskID)
+            task.status = True
+            task.save()
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
-    # delete a task
-    if request.method == 'POST' and 'removeBtn' in request.POST:
-        taskID = request.POST['taskID']
-        task = get_object_or_404(Tasks, pk=taskID)
-        task.delete()
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # delete a task
+        if 'removeBtn' in request.POST:
+            taskID = request.POST['taskID']
+            task = get_object_or_404(Tasks, pk=taskID)
+            task.delete()
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
-    # create a post
-    if request.method == 'POST' and 'addPostBtn' in request.POST:
-        postText = request.POST['post']
-        Posts.create(postText, request.user, room)
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # create a post
+        if 'addPostBtn' in request.POST:
+            postText = request.POST['post']
+            Posts.create(postText, request.user, room)
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
-    # create a comment for a certain post
-    if request.method == 'POST' and 'commentBtn' in request.POST:
-        text = request.POST['comment']
-        postID = request.POST['postID']
-        parentPost = get_object_or_404(Posts, pk=postID)
-        Comments.create(text, request.user, parentPost, room )
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # create a comment for a certain post
+        if 'commentBtn' in request.POST:
+            text = request.POST['comment']
+            postID = request.POST['postID']
+            parentPost = get_object_or_404(Posts, pk=postID)
+            Comments.create(text, request.user, parentPost, room )
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
-    # create a like if doesn't exit for user, else toggle like
-    if request.method == 'POST' and 'likeBtn' in request.POST:
-        postID = request.POST['postID']
-        post = get_object_or_404(Posts, pk=postID)
-        likes = post.likes.all()
-        if likes.filter(user=request.user).exists() == False:
-            content_type = ContentType.objects.get_for_model(Posts)
-            Likes.create(request.user, room, "post", content_type, postID)
-        else: 
-            likes = Likes.objects.filter(user=request.user).filter(object_id=postID)
-            for like in likes:
-                like.toggle_active()
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # create a like if doesn't exit for user, else toggle like
+        if 'likeBtn' in request.POST:
+            postID = request.POST['postID']
+            post = get_object_or_404(Posts, pk=postID)
+            likes = post.likes.all()
+            if likes.filter(user=request.user).exists() == False:
+                content_type = ContentType.objects.get_for_model(Posts)
+                Likes.create(request.user, room, "post", content_type, postID)
+            else: 
+                likes = Likes.objects.filter(user=request.user).filter(object_id=postID)
+                for like in likes:
+                    like.toggle_active()
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
                
-    # delete post if user is author
-    if request.method == 'POST' and 'removePostBtn' in request.POST:
-        postID = request.POST['postID']
-        post = get_object_or_404(Posts, pk=postID)
-        if post.user == request.user:
-            post.delete()
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # delete post if user is author
+        if 'removePostBtn' in request.POST:
+            postID = request.POST['postID']
+            post = get_object_or_404(Posts, pk=postID)
+            if post.user == request.user:
+                post.delete()
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
 
-    # remove comment if user is author
-    if request.method == 'POST' and 'removeCommentBtn' in request.POST:
-        commentID = request.POST['commentID']
-        comment = get_object_or_404(Comments, pk=commentID)
-        if comment.user == request.user:
-            comment.delete()
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # remove comment if user is author
+        if 'removeCommentBtn' in request.POST:
+            commentID = request.POST['commentID']
+            comment = get_object_or_404(Comments, pk=commentID)
+            if comment.user == request.user:
+                comment.delete()
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
     
-    # create a like for a comment
-    if request.method == 'POST' and 'commentLikeBtn' in request.POST:
-        commentID = request.POST['commentID']
-        comment = get_object_or_404(Comments, pk=commentID)
-        likes = comment.likes.all()
-        if likes.filter(user=request.user).exists() == False:
-            content_type = ContentType.objects.get_for_model(Comments)
-            Likes.create(request.user, room, "comment", content_type, commentID)
-        else: 
-            likes = Likes.objects.filter(user=request.user).filter(object_id=commentID)
-            for like in likes:
-                like.toggle_active()
-        return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
+        # create a like for a comment
+        if 'commentLikeBtn' in request.POST:
+            commentID = request.POST['commentID']
+            comment = get_object_or_404(Comments, pk=commentID)
+            likes = comment.likes.all()
+            if likes.filter(user=request.user).exists() == False:
+                content_type = ContentType.objects.get_for_model(Comments)
+                Likes.create(request.user, room, "comment", content_type, commentID)
+            else: 
+                likes = Likes.objects.filter(user=request.user).filter(object_id=commentID)
+                for like in likes:
+                    like.toggle_active()
+            return HttpResponseRedirect(reverse('kitchen_app:enter_room', args=(room.id,)))
                
     # get number of active likes for posts and comments
     postLikes = []
@@ -234,7 +234,7 @@ def edit_profile(request, room_id):
             userDetails.phone = request.POST['phone']
             userDetails.save()
             
-        return HttpResponseRedirect(reverse('kitchen_app:profile', args=(room.id,)))
+        return HttpResponseRedirect(reverse('kitchen_app:view_profile', args=(room.id,)))
    
     return render(request, 'kitchen_app/edit-profile.html', context)
 
@@ -255,24 +255,24 @@ def kitchen_fund(request, room_id):
         'donePayments': donePayments,
     }
 
-    # create task for items to purchase
-    if request.method == 'POST' and 'addBtn' in request.POST:
-        newTask = request.POST['task']
-        Tasks.create(None, room, newTask, "kitchen", None)
-        return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
+    if request.method == 'POST':
+         # create task for items to purchase
+        if 'addBtn' in request.POST:
+            newTask = request.POST['task']
+            Tasks.create(None, room, newTask, "kitchen", None)
+            return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
     
-    # create a task for money back request
-    if request.method == 'POST' and 'requestBtn' in request.POST:
-        amount = request.POST['amount']
-        purchase = request.POST['purchase'] 
-        text = amount + 'DKK for ' + purchase + ' to ' + str(request.user)
-        Tasks.create(None, room, text, "payback", None)
-   
-        return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
+        # create a task for money back request
+        if 'requestBtn' in request.POST:
+            amount = request.POST['amount']
+            purchase = request.POST['purchase'] 
+            text = amount + 'DKK for ' + purchase + ' to ' + str(request.user)
+            Tasks.create(None, room, text, "payback", None)
+            return HttpResponseRedirect(reverse('kitchen_app:kitchen_fund', args=(room.id,)))
 
     return render(request, 'kitchen_app/kitchen_fund.html', context)
 
-def show_room_info(request, room_id):
+def room_info(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     context={  
         'user': request.user,   
@@ -281,9 +281,8 @@ def show_room_info(request, room_id):
     return render(request, 'kitchen_app/room_info.html', context)
 
 
-def weekly_cleaning(request, room_id):
+def weekly_cleaning_list(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-
     #get task and its subtasks
     queryset = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(type="clean")
     for elem in queryset:
@@ -304,12 +303,12 @@ def weekly_cleaning(request, room_id):
         #check if all subtasks are marked as done
         if Subtasks.objects.filter(task=task.pk).count() == Subtasks.objects.filter(task=task.pk).filter(status=True).count():
             messages.success(request, 'Your done')
-        return HttpResponseRedirect(reverse('kitchen_app:weekly_cleaning', args=(room.id,)))
+        return HttpResponseRedirect(reverse('kitchen_app:weekly_cleaning_list', args=(room.id,)))
 
     return render(request, 'kitchen_app/weekly_cleaning.html', context)
 
 
-def schedule(request, room_id):
+def cleaning_schedule(request, room_id):
     room = get_object_or_404(Room, pk=room_id)  
     members = RoomMembers.objects.filter(room=room_id) 
     takenWeeks = Tasks.objects.filter(room=room_id).filter(type="clean").filter(task="weekly cleaning")
@@ -328,8 +327,7 @@ def schedule(request, room_id):
         'members': members,
         'weeks': weeks,
         'takenWeeks': takenWeeks
-    }
-          
+    }     
     return render(request, 'kitchen_app/cleaning_schedule.html', context)
 
 
@@ -354,8 +352,8 @@ def create_event(request, room_id):
         startDate= request.POST['start']
         endDate = request.POST['end']
         type = request.POST['type']
-
         Events.create(title, description, room, type, startDate, endDate)
+
         return HttpResponseRedirect(reverse('kitchen_app:create_event', args=(room.id,)))
 
     return render(request, 'kitchen_app/dashboard.html', context)
@@ -387,7 +385,7 @@ def rules(request, room_id):
     return render(request, 'kitchen_app/rules.html', context)
 
 
-def completed_task(request, room_id):
+def completed_tasks(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
     members = RoomMembers.objects.filter(room=room_id)
 
@@ -396,7 +394,7 @@ def completed_task(request, room_id):
         taskID = request.POST['taskID']
         task = get_object_or_404(Tasks, pk=taskID)
         task.delete()
-        return HttpResponseRedirect(reverse('kitchen_app:completed_task', args=(room.id,)))
+        return HttpResponseRedirect(reverse('kitchen_app:completed_tasks', args=(room.id,)))
 
     #get all completed tasks
     completedTasks = Tasks.objects.filter(room=room_id).filter(user=request.user).filter(status=True)
