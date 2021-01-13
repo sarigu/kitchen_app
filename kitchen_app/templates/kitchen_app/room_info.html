@@ -1,0 +1,15 @@
+{% extends 'kitchen_app/base_dashboard.html' %}
+
+{% block title %}Room Info{% endblock %}
+
+{% block content %}
+<h1>Room Info</h1>
+<ul class="list-group">
+    <li class="list-group-item"> Name: {{ room.name }}
+    </li>
+    <li class="list-group-item"> Mobile Pay Box: {{ room.mobilePayBox }}
+    </li>
+    <li class="list-group-item"> Dorm: {{ room.dorm }}
+    </li>
+</ul>
+{% endblock %}

@@ -38,6 +38,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'kitchen_app:show_room_info' room.pk %}">
+                                Room Info
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'kitchen_app:members' room.pk %}">
                                 Members
                             </a>

@@ -272,6 +272,14 @@ def kitchen_fund(request, room_id):
 
     return render(request, 'kitchen_app/kitchen_fund.html', context)
 
+def show_room_info(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    context={  
+        'user': request.user,   
+        'room': room,
+    }
+    return render(request, 'kitchen_app/room_info.html', context)
+
 
 def weekly_cleaning(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
