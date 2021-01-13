@@ -850,11 +850,3 @@ def admin_edit_room (request, room_id):
 
     return render(request, 'kitchen_app/admin_room_info.html', context)
 
-
-def test_page(request, room_id):
-    room = get_object_or_404(Room, pk=room_id)
-    context={ 
-        'room': room,
-    }
-    return render(request, 'kitchen_app/test.html', context)
-
