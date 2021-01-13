@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>Choose an background image</h1>
-<form id="image-options" action="{% url 'kitchen_app:test' room.pk %}" method="POST">
+<form id="image-options" action="{% url 'kitchen_app:set_new_bg_image' room.pk %}" method="POST">
         {% csrf_token %}
 </form>
 

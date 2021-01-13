@@ -13,6 +13,8 @@ class LoginRequiredMiddleware:
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         path = request.path_info.lstrip('/')
+        # check if user is logged in
         if request.user.is_authenticated == False:  
+            # check if url is in the list of excluded urls (urls everyone can access)
             if not path in settings.EXCLUDED_URLS:   
                 return redirect('login_app:login')

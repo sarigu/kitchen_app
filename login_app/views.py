@@ -20,12 +20,16 @@ def login(request):
          context = {'error': 'wrong email or password.'}
    return render(request, 'login_app/login.html')
 
+
 def logout(request):
    dj_logout(request)
    return HttpResponseRedirect(reverse('login_app:login'))
 
+
 def sign_up(request):
+
    context = {}
+
    if request.method == 'POST':
       username = request.POST['username']
       password = request.POST['password']
@@ -35,9 +39,9 @@ def sign_up(request):
          try:
             User.objects.create_user(username, email, password)
             return HttpResponseRedirect(reverse('login_app:login'))
+         #throws error if username already exists
          except IntegrityError as e:
             context = {'error': 'Could not create account. Username exists try a different name.'}
-
       else:
          context = {'error': 'Passwords do not match.'}
 
@@ -45,17 +49,17 @@ def sign_up(request):
 
 
 def request_password_reset(request):
+
    context = {}
+
    if request.method == "POST":
       user_email = request.POST['email']
       user = None
-
       if user_email:
             try:
                user = User.objects.get(email=user_email)
             except:
                context = {'message': 'Opps. Something went wrong'}
-   
       if user:
             prr = PasswordResetRequest()
             prr.user = user
@@ -65,11 +69,13 @@ def request_password_reset(request):
                'email' : prr.user.email,
             })
             return HttpResponseRedirect(reverse('login_app:login'))
-
    return render(request, 'login_app/password_reset_request.html', context)
 
+
 def set_new_password(request):
+
    context ={}
+
    if request.method == "POST":
       email = request.POST['email']
       password = request.POST['password']

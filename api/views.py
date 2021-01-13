@@ -10,7 +10,7 @@ from images.models import Images
 
 class get_image(generics.RetrieveAPIView):
     renderer_classes = [PGNRenderer]
-
+    #send image object
     def get(self, request, *args, **kwargs):
         image = Images.objects.get(id=self.kwargs['id']).image
         return Response(image, content_type='image/png')
@@ -18,5 +18,6 @@ class get_image(generics.RetrieveAPIView):
 
 class images(generics.RetrieveAPIView):
     def get(self, request,):
+        #get list with all image ids
         imageIDs = Images.objects.values_list('pk', flat=True)
         return Response(imageIDs)
