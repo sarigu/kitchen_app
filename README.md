@@ -11,7 +11,6 @@ Each kitchen can create a room for their kitchen in the app. The room has (multi
 [ERD](https://drive.google.com/file/d/1KIlPT4g51LMqAkXNw7MLD5zm_CrBG3mp/view?usp=sharing)
 
 ## Start virtual environment
-
 Start your virtual environment 
 
 ## Install packages
