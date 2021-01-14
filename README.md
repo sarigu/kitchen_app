@@ -53,8 +53,8 @@ username: admin <br />
 password: admin
 
 Rooms: <br />
-user is a room member: Toast is awesome <br />
-user is a room admin: Aloha
+user is a room admin: Django  <br />
+user is a room member: Toast is awesome
 
 ## Login to admin panel
 
