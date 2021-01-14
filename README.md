@@ -6,10 +6,6 @@
 The project is an attempt to provide shared kitchen spaces with tools to solve the problem. The tools are in regards to organizing finances, distributing tasks, organizing events and communication within the group.
 Each kitchen can create a room for their kitchen in the app. The room has (multiple) admins and members. Room admins can view a room as a normal member or in admin mode (which comes with additional functionalities).
 
-## ER Diagram
-
-[ERD](https://drive.google.com/file/d/1KIlPT4g51LMqAkXNw7MLD5zm_CrBG3mp/view?usp=sharing)
-
 ## Start virtual environment
 Start your virtual environment 
 
