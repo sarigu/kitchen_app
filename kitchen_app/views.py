@@ -316,7 +316,7 @@ def cleaning_schedule(request, room_id):
     weeks = []
     i = 1
     while i <= 52:
-        w = Week(2020, i)
+        w = Week(2021, i)
         week = {'week': w.isoformat(), 'weekStart': w.monday().isoformat(), 'weekEnd': w.sunday().isoformat(), 'deadline': None, 'user': None  }
         weeks.append(week)
         i += 1
@@ -656,7 +656,7 @@ def admin_schedule(request, room_id):
     weeks = []
     i = 1
     while i <= 52:
-        w = Week(2020, i)
+        w = Week(2021, i)
         week = {'week': w.isoformat(), 'weekStart': w.monday().isoformat(), 'weekEnd': w.sunday().isoformat(), 'deadline': None, 'user': None  }
         weeks.append(week)
         i += 1
