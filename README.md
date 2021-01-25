@@ -2,7 +2,7 @@
 
 ## Explanation of project idea
 
-“Kitchen App” is an organizing tool for shared kitchens. I am living in a dorm, where we share a kitchen with up to 20 people. Many of the kitchens struggle with organizing the shared space over Facebook groups. 
+“Kitchen App” is an organizing tool for shared kitchens. In dorms we share a kitchen with up to 20 people. Many of the kitchens struggle with organizing the shared space over Facebook groups. 
 The project is an attempt to provide shared kitchen spaces with tools to solve the problem. The tools are in regards to organizing finances, distributing tasks, organizing events and communication within the group.
 Each kitchen can create a room for their kitchen in the app. The room has (multiple) admins and members. Room admins can view a room as a normal member or in admin mode (which comes with additional functionalities).
 
